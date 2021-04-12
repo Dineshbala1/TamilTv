@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31112.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TamilTv.Android", "TamilSerial\TamilSerial.Android\TamilTv.Android.csproj", "{BA7AE249-2D57-4377-8454-5B3340A458EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TamilTv", "TamilSerial\TamilSerial\TamilTv.csproj", "{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA7AE249-2D57-4377-8454-5B3340A458EC}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6EF42CA-4DED-4321-9D87-F8DD77B8FE31}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {85ABCD9C-200E-4D62-B545-77C22E50BBC7}
+	EndGlobalSection
+EndGlobal

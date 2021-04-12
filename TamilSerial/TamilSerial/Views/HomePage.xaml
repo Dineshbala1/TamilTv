@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage x:Class="TamilSerial.Views.HomePage"
+            xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:views="clr-namespace:TamilTv.Views;assembly=TamilTv"
+            xmlns:xamEffects="clr-namespace:XamEffects;assembly=XamEffects"
+            Title="{Binding Title}"
+            Style="{StaticResource FlyoutPageStyle}">
+
+    <FlyoutPage.Flyout>
+        <ContentPage Title="Menu"
+                     BackgroundColor="#FFFFFF"
+                     Visual="Material">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2.2*" />
+                    <RowDefinition Height="7.8*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0"
+                      Margin="0"
+                      Padding="0"
+                      BackgroundColor="#ffbb29"
+                      VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label FontAttributes="Bold"
+                           FontFamily="Roboto-Medium"
+                           FontSize="Title"
+                           HorizontalOptions="Center"
+                           Text="TAMIL TV"
+                           TextColor="#155263"
+                           VerticalOptions="EndAndExpand" />
+                    <Label Grid.Row="1"
+                           HorizontalOptions="Center"
+                           Text="YOUR CHINNA THIRAI PARTNER"
+                           TextColor="#155263"
+                           VerticalOptions="StartAndExpand" />
+                </Grid>
+
+                <CollectionView x:Name="CollectionView"
+                                Grid.Row="1"
+                                IsGrouped="True"
+                                ItemsSource="{Binding Categories}">
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <Grid Padding="10,0">
+                                <Label FontFamily="Roboto-Light"
+                                       FontSize="Title"
+                                       Text="{Binding Key}"
+                                       TextColor="#155263" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="40,20"
+                                  xamEffects:Commands.Tap="{Binding BindingContext.MenuCommand, Source={x:Reference CollectionView}}"
+                                  xamEffects:Commands.TapParameter="{Binding .}"
+                                  xamEffects:TouchEffect.Color="#ffbb29">
+                                <Label FontAttributes="None"
+                                       FontFamily="Roboto-Light"
+                                       FontSize="Medium"
+                                       Text="{Binding Title, StringFormat='&#x25CC; {0}'}"
+                                       TextColor="#155263" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </Grid>
+        </ContentPage>
+    </FlyoutPage.Flyout>
+    <FlyoutPage.Detail>
+        <views:ArticleListPage />
+    </FlyoutPage.Detail>
+</FlyoutPage>

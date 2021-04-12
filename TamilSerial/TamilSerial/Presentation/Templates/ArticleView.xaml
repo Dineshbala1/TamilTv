@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Grid x:Class="TamilTv.Presentation.Templates.ArticleView"
+      xmlns="http://xamarin.com/schemas/2014/forms"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:converters="http://xamarin.com/schemas/2020/toolkit"
+      xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+      xmlns:materialFrame="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
+      xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+      xmlns:skeleton="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
+      xmlns:xamEffects="clr-namespace:XamEffects;assembly=XamEffects">
+
+    <Grid.Resources>
+        <converters:IsNotNullOrEmptyConverter x:Key="IsNullOrEmptyConverter" />
+    </Grid.Resources>
+
+    <materialFrame:MaterialFrame Margin="5"
+                                 Padding="0"
+                                 skeleton:Skeleton.IsParent="True"
+                                 BackgroundColor="Transparent"
+                                 CornerRadius="5"
+                                 HasShadow="True"
+                                 IsClippedToBounds="True">
+
+        <Grid Margin="0"
+              skeleton:Skeleton.IsParent="True"
+              xamEffects:Commands.Tap="{Binding BindingContext.NavigateToArticleCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+              xamEffects:Commands.TapParameter="{Binding .}"
+              xamEffects:TouchEffect.Color="LightGray">
+
+            <forms:CachedImage Grid.Row="0"
+                               skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Beat}"
+                               skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                               skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                               Aspect="Fill"
+                               DownsampleToViewSize="true"
+                               HeightRequest="180"
+                               LoadingDelay="100"
+                               LoadingPlaceholder="image_loading.png"
+                               LoadingPriority="Highest"
+                               Source="{Binding Image}" />
+
+            <Grid skeleton:Skeleton.IsParent="True"
+                  RowSpacing="2"
+                  VerticalOptions="FillAndExpand">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.50*" />
+                    <RowDefinition Height="0.50*" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="1"
+                      skeleton:Skeleton.IsParent="True"
+                      Style="{StaticResource GridBackgroundStyle}">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.25*" />
+                        <ColumnDefinition Width="9.5*" />
+                        <ColumnDefinition Width="0.25*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.95*" />
+                        <RowDefinition Height="0.05*" />
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Column="1"
+                           skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Beat}"
+                           skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                           skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                           Style="{StaticResource ArticleCardTitleLabelStyle}"
+                           Text="{Binding Title}" />
+
+                </Grid>
+            </Grid>
+
+            <pancakeView:PancakeView Grid.Row="0"
+                                     skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Beat}"
+                                     skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                     skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+                                     IsVisible="{Binding Date, Converter={StaticResource IsNullOrEmptyConverter}}"
+                                     Style="{StaticResource RoundedDatePancakeViewStyle}">
+                <Label Style="{StaticResource ArticleCardDateLabelStyle}" Text="{Binding Date}" />
+
+            </pancakeView:PancakeView>
+
+        </Grid>
+    </materialFrame:MaterialFrame>
+
+</Grid>

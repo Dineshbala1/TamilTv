@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<presentation:SearchPage x:Class="TamilSerial.Views.SearchPage"
+                         xmlns="http://xamarin.com/schemas/2014/forms"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                         xmlns:presentation="clr-namespace:TamilSerial.Presentation;assembly=TamilTv"
+                         xmlns:templates="clr-namespace:TamilTv.Presentation.Templates;assembly=TamilTv"
+                         NavigationPage.HasBackButton="False"
+                         SearchCommand="{Binding SearchCommand}"
+                         SearchPlaceHolderText="{Binding SearchPlaceHolder}"
+                         SearchText="{Binding SearchText}">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="ArticleTemplate">
+            <templates:ArticleView />
+        </DataTemplate>
+
+        <templates:ArticlesEmptyView x:Key="ArticlesEmptyView" />
+
+    </ContentPage.Resources>
+
+    <Grid>
+        <CollectionView EmptyView="{StaticResource ArticlesEmptyView}"
+                        ItemTemplate="{StaticResource ArticleTemplate}"
+                        ItemsLayout="{OnIdiom Phone={StaticResource LinearItemsLayout},
+                                              Tablet={StaticResource GridItemsLayout}}"
+                        ItemsSource="{Binding ProgramInformationList}"
+                        RemainingItemsThreshold="{Binding ThresholdNumber}"
+                        RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
+                        Style="{StaticResource CollectionViewArticleListStyle}" />
+
+        <templates:LoadingView />
+
+    </Grid>
+
+</presentation:SearchPage>

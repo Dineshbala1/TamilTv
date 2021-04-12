@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Grid x:Class="TamilTv.Presentation.Templates.ArticlesEmptyView"
+      xmlns="http://xamarin.com/schemas/2014/forms"
+      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:resources="clr-namespace:TamilTv.Resources;assembly=TamilTv"
+      xmlns:svgImage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms">
+
+    <Grid.Resources>
+        <Style x:Key="ArticleEmptyLabelStyle"
+               BasedOn="{StaticResource MediumLabelStyle}"
+               TargetType="Label">
+            <Setter Property="FontSize" Value="Title" />
+            <Setter Property="TextColor" Value="{StaticResource TealColor}" />
+            <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+            <Setter Property="Text" Value="{x:Static resources:AppResources.NoItemsAvailable}" />
+        </Style>
+
+        <Style x:Key="ArticleEmptyImageStyle" TargetType="svgImage:SvgCachedImage">
+            <Setter Property="Source" Value="undraw_empty.svg" />
+        </Style>
+    </Grid.Resources>
+
+    <Grid.RowDefinitions>
+        <RowDefinition Height="0.9*" />
+        <RowDefinition Height="0.1*" />
+    </Grid.RowDefinitions>
+
+    <svgImage:SvgCachedImage Grid.Row="0" Style="{StaticResource ArticleEmptyImageStyle}" />
+
+    <Label Grid.Row="1" Style="{StaticResource ArticleEmptyLabelStyle}" />
+</Grid>

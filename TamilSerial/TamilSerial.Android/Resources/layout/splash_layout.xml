@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@color/launcher_background"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+      android:id="@+id/imageView1"
+      android:src="@drawable/splash"
+      android:contentDescription="splash"
+      android:gravity="center_horizontal"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+
+
+</RelativeLayout>

@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<presentation1:SearchableContentPage x:Class="TamilSerial.Views.ArticlePage"
+                                     xmlns="http://xamarin.com/schemas/2014/forms"
+                                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                                     xmlns:controls1="clr-namespace:TamilSerial.Presentation.Controls;assembly=TamilTv"
+                                     xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+                                     xmlns:materialFrame="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
+                                     xmlns:presentation1="clr-namespace:TamilSerial.Presentation;assembly=TamilTv"
+                                     xmlns:skeleton="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
+                                     xmlns:xe="clr-namespace:XamEffects;assembly=XamEffects"
+                                     Title="{Binding Title}">
+
+    <Grid x:Name="Grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3.5*" />
+            <RowDefinition Height="6.5*" />
+        </Grid.RowDefinitions>
+
+        <controls1:FullScreenEnabledWebView skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                            skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                            skeleton:Skeleton.IsBusy="{Binding IsBusy, Mode=TwoWay}"
+                                            BackgroundColor="Black"
+                                            HorizontalOptions="FillAndExpand"
+                                            Source="{Binding Url}"
+                                            VerticalOptions="FillAndExpand" />
+
+        <ScrollView Grid.Row="1" Margin="10,0,10,10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                       skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                       skeleton:Skeleton.IsBusy="{Binding IsBusy, Mode=TwoWay}"
+                       FontSize="Large"
+                       HorizontalOptions="StartAndExpand"
+                       HorizontalTextAlignment="Start"
+                       Text="{Binding Article.Title}" />
+
+                <Grid Grid.Row="2">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Label FontSize="Title"
+                           HorizontalOptions="StartAndExpand"
+                           HorizontalTextAlignment="Start"
+                           Text="Related Shows" />
+
+                    <StackLayout Grid.Row="1"
+                                 BindableLayout.ItemsSource="{Binding Article.ProgramInformationList}"
+                                 Orientation="Vertical"
+                                 Spacing="20">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <materialFrame:MaterialFrame Margin="5,0"
+                                                             Padding="0,0,0,0"
+                                                             skeleton:Skeleton.IsParent="True"
+                                                             BorderColor="White"
+                                                             CornerRadius="10"
+                                                             Elevation="7"
+                                                             HasShadow="True"
+                                                             HorizontalOptions="FillAndExpand"
+                                                             IsClippedToBounds="True"
+                                                             MaterialTheme="Light"
+                                                             VerticalOptions="FillAndExpand"
+                                                             Visual="Material">
+
+                                    <Grid Margin="0"
+                                          Padding="0"
+                                          skeleton:Skeleton.IsParent="True"
+                                          xe:Commands.Tap="{Binding BindingContext.NavigateToArticleCommand, Source={x:Reference Grid}}"
+                                          xe:Commands.TapParameter="{Binding .}"
+                                          xe:TouchEffect.Color="White"
+                                          BackgroundColor="Transparent"
+                                          IsClippedToBounds="True">
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3.5*" />
+                                            <ColumnDefinition Width="6.5*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <forms:CachedImage Grid.Column="0"
+                                                           skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                                           skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                                           skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={x:Reference Grid}}"
+                                                           Aspect="Fill"
+                                                           HeightRequest="150"
+                                                           InputTransparent="True"
+                                                           Source="{Binding Image}"
+                                                           Visual="Default" />
+
+                                        <StackLayout Grid.Column="1"
+                                                     Padding="2.5,0"
+                                                     skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                                     skeleton:Skeleton.IsParent="True"
+                                                     BackgroundColor="Transparent"
+                                                     InputTransparent="True"
+                                                     VerticalOptions="CenterAndExpand">
+
+                                            <Label skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                                   skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                                   skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={x:Reference Grid}}"
+                                                   FontAttributes="None"
+                                                   FontFamily="Roboto-Light"
+                                                   FontSize="Medium"
+                                                   LineBreakMode="WordWrap"
+                                                   Text="{Binding Title}"
+                                                   TextColor="#155263"
+                                                   VerticalOptions="CenterAndExpand"
+                                                   Visual="Material" />
+
+                                            <Label skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                                   skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                                   skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={x:Reference Grid}}"
+                                                   FontAttributes="Bold"
+                                                   FontFamily="Roboto-Light"
+                                                   FontSize="Body"
+                                                   Text="{Binding Date}"
+                                                   TextColor="#155263"
+                                                   VerticalOptions="CenterAndExpand" />
+
+                                        </StackLayout>
+                                    </Grid>
+                                </materialFrame:MaterialFrame>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </Grid>
+
+            </Grid>
+        </ScrollView>
+
+    </Grid>
+
+</presentation1:SearchableContentPage>

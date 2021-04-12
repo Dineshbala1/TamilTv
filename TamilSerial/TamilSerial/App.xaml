@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application x:Class="TamilSerial.App"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:skeleton="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
+             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView">
+    <!--
+        Define global resources and styles here, that apply to all pages in your app.
+    -->
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <Color x:Key="YellowColor">#ffbb29</Color>
+            <Color x:Key="TealColor">#155263</Color>
+            <Color x:Key="TealOpacity90">#E6155263</Color>
+            <Color x:Key="SemiTransparent">#FF00000</Color>
+            <Color x:Key="ArticleListBackgroundColor">#00FFFFFF</Color>
+
+            <x:String x:Key="NoItemsSvgImage">undraw_empty.svg</x:String>
+
+            <Style x:Key="GridBackgroundStyle" TargetType="Grid">
+                <Setter Property="Background">
+                    <Setter.Value>
+                        <LinearGradientBrush StartPoint="0,1" EndPoint="0,0">
+                            <GradientStop Offset="0.1" Color="{StaticResource TealOpacity90}" />
+                            <GradientStop Offset="1.0" Color="Transparent" />
+                            <GradientStop Offset="1.0" Color="Transparent" />
+                        </LinearGradientBrush>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="RoundedDatePancakeViewStyle" TargetType="yummy:PancakeView">
+                <Setter Property="BackgroundColor" Value="{StaticResource YellowColor}" />
+                <Setter Property="IsClippedToBounds" Value="True" />
+                <Setter Property="CornerRadius" Value="5" />
+                <Setter Property="VerticalOptions" Value="Start" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalOptions" Value="EndAndExpand" />
+            </Style>
+
+            <Style x:Key="LightLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Roboto-Light" />
+                <Setter Property="FontSize" Value="Small" />
+                <Setter Property="FontAttributes" Value="None" />
+            </Style>
+
+            <Style x:Key="MediumLabelStyle" TargetType="Label">
+                <Setter Property="FontFamily" Value="Roboto-Medium" />
+                <Setter Property="FontAttributes" Value="None" />
+                <Setter Property="FontSize" Value="Medium" />
+            </Style>
+
+            <Style x:Key="ArticleCardTitleLabelStyle"
+                   BasedOn="{StaticResource MediumLabelStyle}"
+                   TargetType="Label">
+                <Setter Property="VerticalOptions" Value="End" />
+                <Setter Property="TextColor" Value="{StaticResource YellowColor}" />
+                <Setter Property="Visual" Value="Material" />
+            </Style>
+
+            <Style x:Key="ArticleCardDateLabelStyle"
+                   BasedOn="{StaticResource LightLabelStyle}"
+                   TargetType="Label">
+                <Setter Property="Margin" Value="2.5" />
+                <Setter Property="VerticalOptions" Value="StartAndExpand" />
+                <Setter Property="TextColor" Value="White" />
+            </Style>
+
+            <Style x:Key="ActivityIndicatorLoadingStyle" TargetType="ActivityIndicator">
+                <Setter Property="Color" Value="{StaticResource YellowColor}" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="InputTransparent" Value="True" />
+                <Setter Property="VerticalOptions" Value="CenterAndExpand" />
+                <Setter Property="HorizontalOptions" Value="CenterAndExpand" />
+            </Style>
+
+            <Style x:Key="FrameLoadingStyle" TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="{StaticResource SemiTransparent}" />
+            </Style>
+
+            <Style x:Key="CollectionViewArticleListStyle" TargetType="CollectionView">
+                <Setter Property="Margin" Value="5,10" />
+                <Setter Property="skeleton:Skeleton.Animation" Value="{skeleton:DefaultAnimation Fade}" />
+                <Setter Property="skeleton:Skeleton.IsParent" Value="True" />
+            </Style>
+
+            <Style x:Key="FlyoutPageStyle" TargetType="FlyoutPage">
+                <Setter Property="FlyoutLayoutBehavior" Value="Popover" />
+                <Setter Property="BackgroundColor" Value="White" />
+                <Setter Property="Visual" Value="Material" />
+                <Setter Property="IsPresented" Value="{Binding IsFlyOutOpen}" />
+            </Style>
+
+            <!--  Item resources  -->
+            <LinearItemsLayout x:Key="LinearItemsLayout"
+                               ItemSpacing="10"
+                               Orientation="Vertical" />
+
+            <GridItemsLayout x:Key="GridItemsLayout"
+                             HorizontalItemSpacing="1"
+                             Orientation="Vertical"
+                             Span="2"
+                             VerticalItemSpacing="10" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

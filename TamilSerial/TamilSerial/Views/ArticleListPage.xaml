@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:SearchableContentPage x:Class="TamilTv.Views.ArticleListPage"
+                             xmlns="http://xamarin.com/schemas/2014/forms"
+                             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                             xmlns:pages="clr-namespace:TamilSerial.Presentation;assembly=TamilTv"
+                             xmlns:templates="clr-namespace:TamilTv.Presentation.Templates;assembly=TamilTv"
+                             Title="{Binding Title}"
+                             BackgroundColor="{StaticResource ArticleListBackgroundColor}"
+                             IsBusy="{Binding IsBusy}"
+                             Visual="Material">
+
+    <pages:SearchableContentPage.Resources>
+
+        <DataTemplate x:Key="ArticleTemplate">
+            <templates:ArticleView />
+        </DataTemplate>
+
+        <templates:ArticlesEmptyView x:Key="ArticlesEmptyView" />
+
+    </pages:SearchableContentPage.Resources>
+
+    <Grid>
+        <CollectionView EmptyView="{StaticResource ArticlesEmptyView}"
+                        ItemTemplate="{StaticResource ArticleTemplate}"
+                        ItemsLayout="{OnIdiom Phone={StaticResource LinearItemsLayout},
+                                              Tablet={StaticResource GridItemsLayout}}"
+                        ItemsSource="{Binding ProgramInformationList}"
+                        RemainingItemsThreshold="{Binding ThresholdNumber}"
+                        RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
+                        Style="{StaticResource CollectionViewArticleListStyle}" />
+
+    </Grid>
+
+</pages:SearchableContentPage>
