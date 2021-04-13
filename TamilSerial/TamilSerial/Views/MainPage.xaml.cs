@@ -18,5 +18,10 @@ namespace TamilSerial.Views
             var navService = ViewModelLocator.Resolve<INavigationService>();
             await navService.NavigateAsync(NavigationKeys.SearchPage);
         }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return base.OnBackButtonPressed();
+        }
     }
 }

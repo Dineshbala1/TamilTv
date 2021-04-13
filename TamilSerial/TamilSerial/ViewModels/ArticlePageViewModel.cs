@@ -15,17 +15,22 @@ namespace TamilSerial.ViewModels
         private readonly ICachedBigbossService _cachedBigbossService;
         private readonly ILogger _logger;
 
-        private ArticleModel _article;
+        private ArticleModel _article = ArticleModel.Default();
         private string _url;
         private string _title;
+        private bool _pause;
 
-        public ArticlePageViewModel(ICachedBigbossService cachedBigbossService, ILogger logger)
+        public ArticlePageViewModel(
+            ICachedBigbossService cachedBigbossService, 
+            ILogger logger)
         {
             _cachedBigbossService = cachedBigbossService;
             _logger = logger;
 
             NavigateToArticleCommand = new Command<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
         }
+
+        public ICommand NavigateToArticleCommand { get; }
 
         public ArticleModel Article
         {
@@ -53,20 +58,28 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        public ICommand NavigateToArticleCommand { get; }
+        public bool Pause
+        {
+            get => _pause;
+            set
+            {
+                _pause = value;
+                RaisePropertyChanged(() => Pause);
+            }
+        }
+
+        public override void OnNavigatedFrom(INavigationParameters navigationParameters)
+        {
+            base.OnNavigatedFrom(navigationParameters);
+
+            Pause = true;
+        }
 
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             base.OnNavigatedTo(navigationParameters);
 
-            LoadDummyData();
-
-            await Task.Run(async () => await LoadData(navigationParameters)).ConfigureAwait(false);
-        }
-
-        private void LoadDummyData()
-        {
-            Article = ArticleModel.Default();
+            await Task.Run(async () => { await LoadData(navigationParameters); }).ConfigureAwait(false);
         }
 
         private Task LoadData(INavigationParameters navigationParameters)
@@ -82,8 +95,6 @@ namespace TamilSerial.ViewModels
                     var articleUrl =
                         navigationParameters.GetValue<ProgramInformationModel>(NavigationParameterKeys.ArticleUrl);
                     Title = articleUrl?.Title;
-
-                    await Task.Delay(1000);
 
                     if (!string.IsNullOrEmpty(articleUrl.Url))
                     {

@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using MonkeyCache;
 using MonkeyCache.FileStore;
 using Refit;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Formatting.Json;
 using TamilSerial.Contracts;
 using TamilSerial.Models;
 using TamilSerial.Presentation.Dialog;
@@ -16,11 +11,14 @@ using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
 using TamilSerial.Services;
 using TamilSerial.Views;
+using TamilTv.Contracts;
+using TamilTv.Services;
 using TamilTv.ViewModels;
 using TamilTv.Views;
 using TinyIoC;
 using Xamarin.Forms;
 using HomePage = TamilSerial.Views.HomePage;
+using Logger = TamilTv.Services.Logger;
 
 namespace TamilSerial.ViewModels.Base
 {
@@ -100,15 +98,8 @@ namespace TamilSerial.ViewModels.Base
 
         private static void RegisterDependencies()
         {
-            var logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.File(new JsonFormatter(),
-                    Path.Combine(Xamarin.Essentials.FileSystem.AppDataDirectory, "TamilTv.log"),
-                    rollingInterval: RollingInterval.Day
-                    // ,shared:true
-                ).CreateLogger();
-
-            _container.Register<ILogger, Logger>(logger);
+            _container.Register<ILogger, Logger>().AsSingleton();
+            _container.Register<IResumableService, NoInternetService>().AsSingleton();
             _container.Register<INavigationService, NavigationService>();
             _container.Register<IDialogService, DialogService>().AsSingleton();
             _container.Register(typeof(IApiService),

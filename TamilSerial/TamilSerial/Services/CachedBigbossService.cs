@@ -20,6 +20,12 @@ namespace TamilSerial.Services
             _barrel = barrel;
         }
 
+        public Task InvalidateCacheToRefresh()
+        {
+            _barrel.EmptyAll();
+            return Task.CompletedTask;
+        }
+
         public async Task<IList<Categories>> GetCategories()
         {
             if (Connectivity.NetworkAccess == NetworkAccess.None)

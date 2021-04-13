@@ -2,9 +2,13 @@
 <pages:SearchableContentPage x:Class="TamilTv.Views.ArticleListPage"
                              xmlns="http://xamarin.com/schemas/2014/forms"
                              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                             xmlns:behaviors="clr-namespace:TamilTv.Presentation.Behaviors;assembly=TamilTv"
+                             xmlns:controls="clr-namespace:MarcTron.Plugin.Controls;assembly=Plugin.MtAdmob"
+                             xmlns:controls1="clr-namespace:TamilTv.Presentation.Controls;assembly=TamilTv"
                              xmlns:pages="clr-namespace:TamilSerial.Presentation;assembly=TamilTv"
                              xmlns:templates="clr-namespace:TamilTv.Presentation.Templates;assembly=TamilTv"
                              Title="{Binding Title}"
+                             behaviors:EndOfListBehavior.EndOfItems="{Binding EndOfItem, Mode=TwoWay}"
                              BackgroundColor="{StaticResource ArticleListBackgroundColor}"
                              IsBusy="{Binding IsBusy}"
                              Visual="Material">
@@ -20,14 +24,30 @@
     </pages:SearchableContentPage.Resources>
 
     <Grid>
-        <CollectionView EmptyView="{StaticResource ArticlesEmptyView}"
-                        ItemTemplate="{StaticResource ArticleTemplate}"
-                        ItemsLayout="{OnIdiom Phone={StaticResource LinearItemsLayout},
-                                              Tablet={StaticResource GridItemsLayout}}"
-                        ItemsSource="{Binding ProgramInformationList}"
-                        RemainingItemsThreshold="{Binding ThresholdNumber}"
-                        RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
-                        Style="{StaticResource CollectionViewArticleListStyle}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <RefreshView Command="{Binding RefreshCommand}"
+                     IsRefreshing="{Binding IsRefreshing}"
+                     RefreshColor="{StaticResource YellowColor}">
+            <CollectionView EmptyView="{StaticResource ArticlesEmptyView}"
+                            ItemTemplate="{StaticResource ArticleTemplate}"
+                            ItemsLayout="{OnIdiom Phone={StaticResource LinearItemsLayout},
+                                                  Tablet={StaticResource GridItemsLayout}}"
+                            ItemsSource="{Binding ProgramInformationList}"
+                            RemainingItemsThreshold="{Binding ThresholdNumber}"
+                            RemainingItemsThresholdReachedCommand="{Binding ThresholdReachedCommand}"
+                            Style="{StaticResource CollectionViewArticleListStyle}" />
+        </RefreshView>
+
+        <controls:MTAdView x:Name="AdView"
+                           Grid.Row="1"
+                           AdsId="ca-app-pub-5213150499806218/1902799875"
+                           HeightRequest="{OnIdiom Phone=50,
+                                                   Tablet=90}"
+                           IsVisible="False"
+                           VerticalOptions="End" />
 
     </Grid>
 

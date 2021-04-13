@@ -6,6 +6,8 @@ namespace TamilSerial.Contracts
 {
     public interface ICachedBigbossService
     {
+        Task InvalidateCacheToRefresh();
+
         Task<IList<Categories>> GetCategories();
 
         Task<PagedArticle> GetArticles(string categoryUrl);

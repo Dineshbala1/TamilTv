@@ -61,7 +61,7 @@ namespace TamilSerial.Presentation.Navigation
             var result = new NavigationResult();
             try
             {
-                var currentPage = (Application.Current.MainPage as NavigationPage)?.RootPage ??
+                var currentPage = (Application.Current.MainPage as NavigationPage)?.CurrentPage ??
                                   Application.Current.MainPage as NavigationPage;
                 await NavigateInternal(currentPage, name, parameters ?? new NavigationParameters(), useModalNavigation,
                     animated);

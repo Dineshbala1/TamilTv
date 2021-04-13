@@ -21,6 +21,7 @@
                                             skeleton:Skeleton.IsBusy="{Binding IsBusy, Mode=TwoWay}"
                                             BackgroundColor="Black"
                                             HorizontalOptions="FillAndExpand"
+                                            Pause="{Binding Pause}"
                                             Source="{Binding Url}"
                                             VerticalOptions="FillAndExpand" />
 

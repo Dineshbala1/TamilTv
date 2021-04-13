@@ -9,6 +9,7 @@ using Android.Views;
 using AndroidX.AppCompat.Widget;
 using FFImageLoading;
 using FFImageLoading.Cache;
+using Android.Gms.Ads;
 
 namespace TamilSerial.Droid
 {
@@ -33,6 +34,7 @@ namespace TamilSerial.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
             // Android.Glide.Forms.Init(this, null, true);
             Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
+            MobileAds.Initialize(ApplicationContext);
             LoadApplication(new App());
         }
 

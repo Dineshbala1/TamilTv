@@ -3,6 +3,7 @@ using System.ComponentModel;
 using Android.Content;
 using TamilSerial.Droid.Renderers;
 using TamilSerial.Presentation.Controls;
+using Xamarin.Essentials;
 using Xamarin.Forms.Platform.Android;
 using XFAndroidFullScreen.Droid.Renderers;
 using WebView = Xamarin.Forms.WebView;
@@ -32,6 +33,7 @@ namespace TamilSerial.Droid.Renderers
         {
             base.OnElementChanged(e);
             
+
             _webView = (FullScreenEnabledWebView) e.NewElement;
             if (Control != null)
             {
@@ -39,6 +41,7 @@ namespace TamilSerial.Droid.Renderers
                 Control.Settings.JavaScriptCanOpenWindowsAutomatically = true;
                 Control.Settings.BuiltInZoomControls = false;
                 Control.SetWebViewClient(new PlayerClient(this));
+                Xamarin.Essentials.Platform.ActivityStateChanged += Platform_ActivityStateChanged;
             }
         }
 
@@ -48,7 +51,15 @@ namespace TamilSerial.Droid.Renderers
 
             if (e.PropertyName == FullScreenEnabledWebView.PauseProperty.PropertyName)
             {
-                this.Control.LoadUrl("javascript:jwplayer().pause()");
+                if ((Element as FullScreenEnabledWebView).Pause)
+                {
+                    Control.LoadUrl("javascript:jwplayer().pause()");
+                    Control.LoadUrl("javascript:player.pause()");
+                }
+                else
+                {
+                    Control.OnResume();
+                }
             }
         }
 
@@ -65,6 +76,15 @@ namespace TamilSerial.Droid.Renderers
             return client;
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (disposing)
+            {
+                Xamarin.Essentials.Platform.ActivityStateChanged -= Platform_ActivityStateChanged;
+            }
+        }
+
         /// <summary>
         /// Executes the full-screen command on the <see cref="FullScreenEnabledWebView"/> if available. The
         /// Xamarin view to display in full-screen is sent as a command parameter.
@@ -75,7 +95,7 @@ namespace TamilSerial.Droid.Renderers
             object sender,
             EnterFullScreenRequestedEventArgs eventArgs)
         {
-            this.Control.OnResume();
+            Control.OnResume();
             if (_webView.EnterFullScreenCommand != null && _webView.EnterFullScreenCommand.CanExecute(null))
             {
                 _webView.EnterFullScreenCommand.Execute(eventArgs.View.ToView());
@@ -90,13 +110,28 @@ namespace TamilSerial.Droid.Renderers
         /// <param name="eventArgs">The event arguments.</param>
         private void OnExitFullscreenRequested(object sender, EventArgs eventArgs)
         {
-            this.Control.OnPause();
+            Control.OnPause();
             if (_webView.ExitFullScreenCommand != null && _webView.ExitFullScreenCommand.CanExecute(null))
             {
                 _webView.ExitFullScreenCommand.Execute(null);
             }
 
-            this.Control.OnResume();
+            Control.OnResume();
+        }
+
+        private void Platform_ActivityStateChanged(object sender, ActivityStateChangedEventArgs e)
+        {
+            switch (e.State)
+            {
+                case ActivityState.Resumed:
+                    Control.OnResume();
+                    break;
+                case ActivityState.Paused:
+                    Control.OnPause();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
