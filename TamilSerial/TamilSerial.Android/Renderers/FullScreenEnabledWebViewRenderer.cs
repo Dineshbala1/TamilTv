@@ -32,7 +32,6 @@ namespace TamilSerial.Droid.Renderers
         protected override void OnElementChanged(ElementChangedEventArgs<WebView> e)
         {
             base.OnElementChanged(e);
-            
 
             _webView = (FullScreenEnabledWebView) e.NewElement;
             if (Control != null)
