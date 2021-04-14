@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="TamilTv.Views.CategoryPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:MarcTron.Plugin.Controls;assembly=Plugin.MtAdmob"
+             xmlns:xamEffects="clr-namespace:XamEffects;assembly=XamEffects"
+             Title="Menu"
+             BackgroundColor="#FFFFFF"
+             Visual="Material">
+
+    <ContentPage.Resources>
+        <Style x:Key="LightTextStyle" TargetType="Label">
+            <Setter Property="FontFamily" Value="Roboto-Light" />
+            <Setter Property="TextColor" Value="{StaticResource TealColor}" />
+        </Style>
+
+        <Style x:Key="MediumTextStyle" TargetType="Label">
+            <Setter Property="FontFamily" Value="Roboto-Medium" />
+            <Setter Property="TextColor" Value="{StaticResource TealColor}" />
+        </Style>
+
+        <Style x:Key="FontMediumLightTextStyle"
+               BasedOn="{StaticResource LightTextStyle}"
+               TargetType="Label">
+            <Setter Property="FontSize" Value="Medium" />
+        </Style>
+
+        <Style x:Key="FontTitleLightTextStyle"
+               BasedOn="{StaticResource LightTextStyle}"
+               TargetType="Label">
+            <Setter Property="FontSize" Value="Title" />
+        </Style>
+
+        <Style x:Key="FontTitleMediumTextStyle"
+               BasedOn="{StaticResource MediumTextStyle}"
+               TargetType="Label">
+            <Setter Property="FontSize" Value="Title" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="EndAndExpand" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Text" Value="TAMIL TV" />
+        </Style>
+
+        <Style x:Key="FontMediumSubmenuLightTextStyle"
+               BasedOn="{StaticResource LightTextStyle}"
+               TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+            <Setter Property="Text" Value="YOUR CHINNA THIRAI PARTNER" />
+        </Style>
+
+        <Style x:Key="BackgroundGridStyle" TargetType="Grid">
+            <Setter Property="BackgroundColor" Value="{StaticResource YellowColor}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="VerticalOptions" Value="FillAndExpand" />
+        </Style>
+
+        <Style x:Key="ActionableGridStyle" TargetType="Grid">
+            <Setter Property="Padding" Value="40,20" />
+            <Setter Property="xamEffects:Commands.Tap" Value="{Binding BindingContext.MenuCommand, Source={x:RelativeSource AncestorType={x:Type ContentPage}}}" />
+            <Setter Property="xamEffects:Commands.TapParameter" Value="{Binding .}" />
+            <Setter Property="xamEffects:TouchEffect.Color" Value="{StaticResource YellowColor}" />
+        </Style>
+
+        <DataTemplate x:Key="GroupHeaderTemplate">
+            <Grid Padding="10,0">
+                <Label Style="{StaticResource FontTitleLightTextStyle}" Text="{Binding Key}" />
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ItemTemplate">
+            <Grid Style="{StaticResource ActionableGridStyle}">
+                <Label Style="{StaticResource FontMediumLightTextStyle}" Text="{Binding Title, StringFormat='&#x25CC; {0}'}" />
+            </Grid>
+        </DataTemplate>
+
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2.2*" />
+            <RowDefinition Height="7.8*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Style="{StaticResource BackgroundGridStyle}">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0" Style="{StaticResource FontTitleMediumTextStyle}" />
+
+            <Label Grid.Row="1" Style="{StaticResource FontMediumSubmenuLightTextStyle}" />
+        </Grid>
+
+        <CollectionView Grid.Row="1"
+                        GroupHeaderTemplate="{StaticResource GroupHeaderTemplate}"
+                        IsGrouped="True"
+                        ItemTemplate="{StaticResource ItemTemplate}"
+                        ItemsSource="{Binding Categories}" />
+
+        <controls:MTAdView Grid.Row="2"
+                           AdsId="ca-app-pub-5213150499806218/2140928439"
+                           HeightRequest="{OnIdiom Phone=50,
+                                                   Tablet=90}"
+                           IsVisible="True"
+                           PersonalizedAds="False"
+                           VerticalOptions="End" />
+
+    </Grid>
+</ContentPage>

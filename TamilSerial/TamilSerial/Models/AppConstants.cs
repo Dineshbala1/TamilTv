@@ -22,7 +22,7 @@ namespace TamilSerial.Models
 
     public class NavigationParameterKeys
     {
-        public const string _NavigationMode = nameof(_NavigationMode);
+        public const string __NavigationMode = nameof(__NavigationMode);
         public const string ArticleUrl = nameof(ArticleUrl);
     }
 }

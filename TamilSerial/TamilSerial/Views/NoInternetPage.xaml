@@ -2,11 +2,33 @@
 <ContentPage x:Class="TamilTv.Views.NoInternetPage"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+             xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms">
     <ContentPage.Content>
-        <forms:CachedImage Aspect="AspectFill"
+        <!--<forms:CachedImage Aspect="AspectFill"
                            HorizontalOptions="FillAndExpand"
                            Source="offline.png"
-                           VerticalOptions="FillAndExpand" />
+                           VerticalOptions="FillAndExpand" />-->
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90*" />
+                <RowDefinition Height="10*" />
+            </Grid.RowDefinitions>
+
+            <forms:AnimationView Animation="NoInternet.json"
+                                 AutoPlay="True"
+                                 HorizontalOptions="FillAndExpand"
+                                 RepeatMode="Infinite"
+                                 Scale="1"
+                                 Speed="1"
+                                 VerticalOptions="FillAndExpand" />
+
+            <Label Grid.Row="1"
+                   FontSize="Small"
+                   HorizontalOptions="CenterAndExpand"
+                   Text="No Internet available !! Please check your internet connection"
+                   TextColor="{StaticResource TealColor}" />
+        </Grid>
+
     </ContentPage.Content>
 </ContentPage>

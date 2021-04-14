@@ -2,8 +2,13 @@
 <Grid x:Class="TamilTv.Presentation.Templates.ArticlesEmptyView"
       xmlns="http://xamarin.com/schemas/2014/forms"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:effects="http://xamarin.com/schemas/2020/toolkit"
       xmlns:resources="clr-namespace:TamilTv.Resources;assembly=TamilTv"
       xmlns:svgImage="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms">
+
+    <Grid.Effects>
+        <effects:LifecycleEffect Loaded="LifecycleEffect_OnLoaded" Unloaded="LifecycleEffect_OnUnloaded" />
+    </Grid.Effects>
 
     <Grid.Resources>
         <Style x:Key="ArticleEmptyLabelStyle"
@@ -27,5 +32,7 @@
 
     <svgImage:SvgCachedImage Grid.Row="0" Style="{StaticResource ArticleEmptyImageStyle}" />
 
-    <Label Grid.Row="1" Style="{StaticResource ArticleEmptyLabelStyle}" />
+    <Label x:Name="ErrorStatus"
+           Grid.Row="1"
+           Style="{StaticResource ArticleEmptyLabelStyle}" />
 </Grid>

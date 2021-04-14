@@ -1,11 +1,8 @@
 ﻿using Xamarin.Essentials;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace TamilTv.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class NoInternetPage : ContentPage
+    public partial class NoInternetPage
     {
         public NoInternetPage()
         {
@@ -20,6 +17,11 @@ namespace TamilTv.Views
             }
 
             return true;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
         }
     }
 }

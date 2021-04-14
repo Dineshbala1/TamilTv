@@ -12,7 +12,9 @@ using TamilSerial.ViewModels.Base;
 
 namespace TamilSerial.Droid
 {
-    [Activity(Label = "Tamil TV", Icon = "@mipmap/icon", Theme = "@style/SplashTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize, NoHistory = true)]
+    [Activity(Label = "Tamil TV", Icon = "@mipmap/icon", Theme = "@style/SplashTheme", MainLauncher = true,
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode |
+                               ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize, NoHistory = true)]
     public class SplashActivity : AppCompatActivity
     {
         protected override void OnCreate(Bundle? savedInstanceState)
@@ -26,7 +28,6 @@ namespace TamilSerial.Droid
             ImageService.Instance.LoadCompiledResource("splash_load").Into(imageView);
 
             Barrel.ApplicationId = "TamilSerial";
-            Barrel.Current.AutoExpire = false;
             Toolkit.Init();
 
             ViewModelLocator.Resolve<ICachedBigbossService>();
@@ -38,10 +39,7 @@ namespace TamilSerial.Droid
 
             await Task.Delay(2500);
 
-            await Task.Run(() =>
-            {
-                StartActivity(typeof(MainActivity));
-            });
+            await Task.Run(() => { StartActivity(typeof(MainActivity)); });
         }
     }
 }

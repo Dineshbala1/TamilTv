@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TamilSerial.Contracts;
 using TamilSerial.Models;
@@ -19,18 +21,22 @@ namespace TamilSerial.ViewModels
         private string _url;
         private string _title;
         private bool _pause;
+        private ObservableCollection<SelectedPlayable> _selectedPlayables = new ObservableCollection<SelectedPlayable>();
 
         public ArticlePageViewModel(
-            ICachedBigbossService cachedBigbossService, 
+            ICachedBigbossService cachedBigbossService,
             ILogger logger)
         {
             _cachedBigbossService = cachedBigbossService;
             _logger = logger;
 
             NavigateToArticleCommand = new Command<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
+            UpdatedPlayingVideoUrlCommand = new Command<SelectedPlayable>(ExecuteUpdatedPlayingVideoUrlCommand);
         }
 
         public ICommand NavigateToArticleCommand { get; }
+
+        public ICommand UpdatedPlayingVideoUrlCommand { get; }
 
         public ArticleModel Article
         {
@@ -68,6 +74,16 @@ namespace TamilSerial.ViewModels
             }
         }
 
+        public ObservableCollection<SelectedPlayable> SelectedPlayables
+        {
+            get => _selectedPlayables;
+            set
+            {
+                _selectedPlayables = value;
+                RaisePropertyChanged(() => SelectedPlayables);
+            }
+        }
+
         public override void OnNavigatedFrom(INavigationParameters navigationParameters)
         {
             base.OnNavigatedFrom(navigationParameters);
@@ -78,8 +94,12 @@ namespace TamilSerial.ViewModels
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             base.OnNavigatedTo(navigationParameters);
-
-            await Task.Run(async () => { await LoadData(navigationParameters); }).ConfigureAwait(false);
+            if (navigationParameters.ContainsKey(NavigationParameterKeys.__NavigationMode) &&
+                navigationParameters.GetValue<NavigationMode>(NavigationParameterKeys.__NavigationMode) ==
+                NavigationMode.New)
+            {
+                await LoadData(navigationParameters);
+            }
         }
 
         private Task LoadData(INavigationParameters navigationParameters)
@@ -95,18 +115,35 @@ namespace TamilSerial.ViewModels
                     var articleUrl =
                         navigationParameters.GetValue<ProgramInformationModel>(NavigationParameterKeys.ArticleUrl);
                     Title = articleUrl?.Title;
-
+                    var collection = new ObservableCollection<SelectedPlayable>();
                     if (!string.IsNullOrEmpty(articleUrl.Url))
                     {
                         var article = await _cachedBigbossService.GetArticle(articleUrl.Url);
                         Article = ArticleModel.Transform(article);
                         Article.Content = Article.Title;
 
-                        foreach (var videorUrl in Article.VideoUrl)
+                        if (Article.VideoUrl.Count <= 1)
                         {
-                            Url = videorUrl + "&img" + Article.VideoBanner;
+                            Url = Article.VideoUrl[0] + "&img" + Article.VideoBanner;
+                        }
+
+                        for (int i = 0; i < Article.VideoUrl.Count - 1; i++)
+                        {
+                            if (i == 0)
+                            {
+                                Url = Article.VideoUrl[i] + "&img" + Article.VideoBanner;
+                            }
+
+                            collection.Add(new SelectedPlayable()
+                            {
+                                Title = $"Part - {i + 1}",
+                                Url = Article.VideoUrl[i] + "&img" + Article.VideoBanner,
+                                IsSelected = i == 0
+                            });
                         }
                     }
+
+                    SelectedPlayables = collection;
                 }
                 catch (System.Exception exception)
                 {
@@ -128,7 +165,19 @@ namespace TamilSerial.ViewModels
             }
 
             await NavigationService.NavigateAsync("ArticlePage",
-                new NavigationParameters() {{NavigationParameterKeys.ArticleUrl, programInformation}});
+                new NavigationParameters() { { NavigationParameterKeys.ArticleUrl, programInformation } });
+        }
+
+        private void ExecuteUpdatedPlayingVideoUrlCommand(SelectedPlayable playable)
+        {
+            SelectedPlayables.All(x =>
+            {
+                x.IsSelected = false;
+                return true;
+            });
+
+            playable.IsSelected = true;
+            Url = playable.Url;
         }
     }
 }

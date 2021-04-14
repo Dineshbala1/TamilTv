@@ -4,7 +4,6 @@
     <application android:label="TamilTv" android:theme="@style/MainTheme">
       
       <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-5213150499806218~1046187231"/>
-      <meta-data android:name="com.google.android.gms.ads.AD_MANAGER_APP" android:value="true" />
 
     </application>
 

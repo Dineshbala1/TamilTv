@@ -32,14 +32,14 @@ namespace TamilSerial.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer: true);
-            // Android.Glide.Forms.Init(this, null, true);
             Xamarin.Forms.FormsMaterial.Init(this, savedInstanceState);
             MobileAds.Initialize(ApplicationContext);
+            
             LoadApplication(new App());
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions,
-            [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+            [GeneratedEnum] Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 

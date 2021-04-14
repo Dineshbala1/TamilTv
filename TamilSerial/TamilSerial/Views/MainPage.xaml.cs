@@ -1,27 +1,24 @@
-﻿using System;
-using TamilSerial.Models;
-using TamilSerial.Presentation.Navigation;
+﻿using TamilSerial.Presentation.Navigation;
 using TamilSerial.ViewModels.Base;
 
 namespace TamilSerial.Views
 {
     public partial class MainPage
     {
+        private readonly INavigationService _navigationService;
+
         public MainPage()
         {
             InitializeComponent();
             this.BindingContext = this;
-        }
 
-        private async void MenuItem_OnClicked(object sender, EventArgs e)
-        {
-            var navService = ViewModelLocator.Resolve<INavigationService>();
-            await navService.NavigateAsync(NavigationKeys.SearchPage);
+            _navigationService = ViewModelLocator.Resolve<INavigationService>();
         }
 
         protected override bool OnBackButtonPressed()
         {
-            return base.OnBackButtonPressed();
+            Xamarin.Forms.Device.BeginInvokeOnMainThread(async () => await _navigationService.GoBackAsync());
+            return true;
         }
     }
 }

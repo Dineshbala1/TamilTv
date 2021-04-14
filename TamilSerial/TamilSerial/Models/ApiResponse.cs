@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using TamilSerial.Contracts;
+using TamilSerial.ViewModels.Base;
+using Xamarin.Forms;
 
 namespace TamilSerial.Models
 {
@@ -190,4 +192,22 @@ namespace TamilSerial.Models
         }
     }
 
+    public class SelectedPlayable : ExtendedBindableObject
+    {
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                RaisePropertyChanged(() => IsSelected);
+            }
+        }
+
+        public string Title { get; set; }
+
+        public string Url { get; set; }
+    }
 }

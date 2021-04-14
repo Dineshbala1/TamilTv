@@ -26,7 +26,7 @@ namespace TamilSerial.ViewModels
         private int _thresholdNumber = 2;
         private bool _isDummyLoaded = true;
         private bool _endOfItem;
-        private Categories _selectedCategory = null;
+        private Categories _selectedCategory;
         private bool _isRefreshing;
 
         public HomePageViewModel(
@@ -127,16 +127,15 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        public override void OnNavigatedFrom(INavigationParameters navigationParameters)
-        {
-            base.OnNavigatedFrom(navigationParameters);
-        }
-
         public override async void OnNavigatedTo(INavigationParameters navigationParameters)
         {
             base.OnNavigatedTo(navigationParameters);
-
-            await InitializeData();
+            if (navigationParameters.ContainsKey(NavigationParameterKeys.__NavigationMode) &&
+                navigationParameters.GetValue<NavigationMode>(NavigationParameterKeys.__NavigationMode) ==
+                NavigationMode.New)
+            {
+                await InitializeData();
+            }
         }
 
         private Task InitializeData(bool showLoading = true)
@@ -182,14 +181,6 @@ namespace TamilSerial.ViewModels
                 Categories = new ObservableCollection<CategoryGrouping<string, Categories>>();
                 ProgramInformationList = new ObservableCollection<ProgramInformationModel>();
             }
-        }
-
-        private void LoadDummyData()
-        {
-            ProgramInformationList = ProgramInformationModel
-                .GenerateDummyProgramInformationModel(12).ToObservableCollection();
-
-            _isDummyLoaded = true;
         }
 
         private async Task ExecuteMenuCommand(Categories categoryUrl, bool showLoading = true)
@@ -257,7 +248,7 @@ namespace TamilSerial.ViewModels
                     {
                         EndOfItem = true;
                     }
-                }, "Downloading \n new episodes");
+                }, "Downloading \n old episodes");
             }
             catch (System.Exception exception)
             {

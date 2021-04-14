@@ -61,6 +61,15 @@ namespace TamilTv.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Internet available ! Please check your internet connection. .
+        /// </summary>
+        internal static string NoInternet {
+            get {
+                return ResourceManager.GetString("NoInternet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Now shows available !! 
         /// Please try again later.
         /// </summary>
