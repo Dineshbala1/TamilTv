@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Polly;
 using Serilog;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
+using TamilTv.Models;
 
 namespace TamilSerial.Services
 {
@@ -24,9 +24,9 @@ namespace TamilSerial.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IList<Categories>> GetCategories()
+        public async Task<IList<Category>> GetCategories()
         {
-            IList<Categories> categories = new List<Categories>();
+            IList<Category> categories = new List<Category>();
             var response = await GetCategoriesFromService(AppConstants.HostUrl);
             if (response!= null && response.Any())
             {
@@ -34,7 +34,7 @@ namespace TamilSerial.Services
                 {
                     foreach (var menuItem in kvp.Value)
                     {
-                        categories.Add(new Categories
+                        categories.Add(new Category
                         {
                             CategoryName = kvp.Key,
                             Title = menuItem.Title,

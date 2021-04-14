@@ -2,15 +2,17 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
+using TamilTv.Contracts;
+using TamilTv.Extensions;
+using TamilTv.Models;
 
 namespace TamilSerial.Services
 {
-    public class ArticlesHandler : IArticlesHandler
+    public class PagedArticlesHandler : IPagedArticlesHandler
     {
         private readonly ICachedBigbossService _cachedBigbossService;
 
-        public ArticlesHandler(ICachedBigbossService cachedBigbossService)
+        public PagedArticlesHandler(ICachedBigbossService cachedBigbossService)
         {
             _cachedBigbossService = cachedBigbossService;
         }
@@ -19,13 +21,13 @@ namespace TamilSerial.Services
 
         public bool HasNextPage => _pagedArticle.PaginationDetail.Any() &&
                                    _pagedArticle?.PaginationDetail?.SingleOrDefault(x => x.IsCurrent)?.PageNumber
-                                       ?.ToInt() >= 1;
+                                       ?.GetIntFromString() >= 1;
 
         public bool HasPreviousPage => _pagedArticle.PaginationDetail.Any() &&
                                        _pagedArticle?.PaginationDetail?.SingleOrDefault(x => x.IsCurrent)?.PageNumber
-                                           ?.ToInt() > 1;
+                                           ?.GetIntFromString() > 1;
 
-        public async Task<PagedArticle> LoadArticles(string categoryUrl)
+        public async Task<IList<ProgramInformationModel>> LoadArticles(string categoryUrl)
         {
             _pagedArticle = await _cachedBigbossService.GetArticles(categoryUrl) ?? new PagedArticle
             {
@@ -39,26 +41,26 @@ namespace TamilSerial.Services
                 currentPage.PageUrl = currentPage.PageUrl + "/page/1";
             }
 
-            return _pagedArticle;
+            return _pagedArticle.ProgramInformations.Select(x => x.TransformToProgramInformationModel()).ToList();
         }
 
-        public Task<PagedArticle> ExecuteGetNextPage()
+        public Task<IList<ProgramInformationModel>> ExecuteGetNextPage()
         {
             var currentPage = _pagedArticle.PaginationDetail.SingleOrDefault(x => x.IsCurrent);
             return LoadArticles(currentPage?.PageUrl.Replace("page/" + currentPage.PageNumber,
-                "page/" + (currentPage.PageNumber.ToInt() + 1)));
+                "page/" + (currentPage.PageNumber.GetIntFromString() + 1)));
         }
 
-        public Task<PagedArticle> ExecuteGetPreviousPage()
+        public Task ExecuteGetPreviousPage()
         {
             var currentPage = _pagedArticle.PaginationDetail.SingleOrDefault(x => x.IsCurrent);
-            if (currentPage != null && currentPage.PageNumber.ToInt() <= 1)
+            if (currentPage != null && currentPage.PageNumber.GetIntFromString() <= 1)
             {
                 return null;
             }
 
             return LoadArticles(currentPage.PageUrl.Replace(currentPage.PageNumber,
-                (currentPage.PageNumber.ToInt() - 1).ToString()));
+                (currentPage.PageNumber.GetIntFromString() - 1).ToString()));
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System.Windows.Input;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Dialog;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
+using TamilTv.Models;
 using Xamarin.Forms;
 
 namespace TamilSerial.ViewModels.Base
@@ -13,6 +13,7 @@ namespace TamilSerial.ViewModels.Base
         protected readonly INavigationService NavigationService;
 
         private bool _isBusy;
+        private string _title;
 
         public bool IsBusy
         {
@@ -22,6 +23,16 @@ namespace TamilSerial.ViewModels.Base
             {
                 _isBusy = value;
                 RaisePropertyChanged(() => IsBusy);
+            }
+        }
+
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                RaisePropertyChanged(() => Title);
             }
         }
 

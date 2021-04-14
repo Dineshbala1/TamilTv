@@ -1,6 +1,4 @@
-﻿using Xamarin.Essentials;
-
-namespace TamilSerial.Models
+﻿namespace TamilTv.Models
 {
     public class AppConstants
     {

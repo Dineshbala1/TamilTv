@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TamilSerial.Models;
+using TamilTv.Models;
 
 namespace TamilSerial.Contracts
 {
@@ -8,7 +8,7 @@ namespace TamilSerial.Contracts
     {
         Task InvalidateCacheToRefresh();
 
-        Task<IList<Categories>> GetCategories();
+        Task<IList<Category>> GetCategories();
 
         Task<PagedArticle> GetArticles(string categoryUrl);
 

@@ -5,13 +5,13 @@ using MonkeyCache;
 using MonkeyCache.FileStore;
 using Refit;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Dialog;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
 using TamilSerial.Services;
 using TamilSerial.Views;
 using TamilTv.Contracts;
+using TamilTv.Models;
 using TamilTv.Services;
 using TamilTv.ViewModels;
 using TamilTv.Views;
@@ -107,7 +107,7 @@ namespace TamilSerial.ViewModels.Base
             _container.Register(typeof(IBarrel), Barrel.Current);
             _container.Register<ICachedBigbossService, CachedBigbossService>().AsSingleton();
             _container.Register<IBigBossService, BigBossService>().AsSingleton();
-            _container.Register<IArticlesHandler, ArticlesHandler>().AsSingleton();
+            _container.Register<IPagedArticlesHandler, PagedArticlesHandler>().AsSingleton();
         }
 
         private static void RegisterView()

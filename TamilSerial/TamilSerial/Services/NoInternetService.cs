@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Navigation;
 using TamilTv.Contracts;
+using TamilTv.Models;
 using Xamarin.Essentials;
 
 namespace TamilTv.Services

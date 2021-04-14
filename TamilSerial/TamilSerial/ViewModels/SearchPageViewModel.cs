@@ -1,12 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.ViewModels.Base;
 using TamilTv.Contracts;
-using Xamarin.Forms;
+using TamilTv.Extensions;
+using TamilTv.Models;
+using TamilTv.Resources;
+using Xamarin.CommunityToolkit.ObjectModel;
 
 namespace TamilSerial.ViewModels
 {
@@ -23,8 +26,8 @@ namespace TamilSerial.ViewModels
             _cachedBigbossService = cachedBigbossService;
             _logger = logger;
 
-            SearchCommand = new Command<string>(ExecuteSearchCommand);
-            NavigateToArticleCommand = new Command<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
+            SearchCommand = new AsyncCommand<string>(ExecuteSearchCommand);
+            NavigateToArticleCommand = new AsyncCommand<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
             SearchPlaceHolder = "Enter your keywords to search";
         }
 
@@ -54,7 +57,7 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        private async void ExecuteSearchCommand(string searchText)
+        private async Task ExecuteSearchCommand(string searchText)
         {
             try
             {
@@ -64,9 +67,8 @@ namespace TamilSerial.ViewModels
                     if (!string.IsNullOrEmpty(SearchText))
                     {
                         var response = await _cachedBigbossService.Search(SearchText);
-                        ProgramInformationList =
-                            new ObservableCollection<ProgramInformationModel>(
-                                response.ProgramInformations.Select(x => ProgramInformationModel.Transform(x)));
+                        ProgramInformationList = response.ProgramInformations
+                            .Select(x => x.TransformToProgramInformationModel()).ToObservableCollection();
                     }
 
                 }, $"Searching {searchText}");
@@ -78,17 +80,20 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        private async void ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
+        private async Task ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
         {
             if (string.IsNullOrEmpty(programInformation.Url))
             {
                 await DialogService.ShowAlertAsync(
-                    $"Sorry !! Invalid content information for {programInformation.Title}", "Warning",
-                    "Ok");
+                    string.Format(AppResources.InvalidNavigationUrl, programInformation.Title),
+                    AppResources.Warning,
+                    AppResources.Okay);
+                return;
             }
+
             await NavigationService.NavigateAsync(
                 NavigationKeys.ArticlePage,
-                new NavigationParameters() {{NavigationParameterKeys.ArticleUrl, programInformation}});
+                new NavigationParameters {{NavigationParameterKeys.ArticleUrl, programInformation}});
         }
     }
 }

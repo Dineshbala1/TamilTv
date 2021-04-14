@@ -3,69 +3,59 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
 using TamilSerial.ViewModels.Base;
 using TamilTv.Contracts;
-using Xamarin.Forms;
+using TamilTv.Extensions;
+using TamilTv.Models;
+using TamilTv.Resources;
+using Xamarin.CommunityToolkit.ObjectModel;
 
 namespace TamilSerial.ViewModels
 {
     /// <inheritdoc />
     public class HomePageViewModel : ViewModelBase
     {
-        private readonly ICachedBigbossService _cachedBigbossService;
-        private readonly IArticlesHandler _articlesHandler;
+        private readonly ICachedBigbossService _cachedBigBossService;
+        private readonly IPagedArticlesHandler _pagedArticlesHandler;
         private readonly ILogger _logger;
-        private ObservableCollection<CategoryGrouping<string, Categories>> _categories;
-        private ObservableCollection<ProgramInformationModel> _programInformationListList = ProgramInformationModel.GenerateDummyProgramInformationModel(12).ToObservableCollection();
 
-        private string _title;
         private bool _isFlyOutOpen;
         private int _thresholdNumber = 2;
         private bool _isDummyLoaded = true;
         private bool _endOfItem;
-        private Categories _selectedCategory;
+        private Category _selectedCategory;
         private bool _isRefreshing;
+        private ObservableCollection<CategoryGrouping<string, Category>> _categories =
+            new ObservableCollection<CategoryGrouping<string, Category>>();
+        private ObservableCollection<ProgramInformationModel> _programInformationListList =
+            ProgramInformationModel.GenerateDummyProgramInformationModel(12).ToObservableCollection();
 
         public HomePageViewModel(
-            ICachedBigbossService cachedBigbossService,
-            IArticlesHandler articlesHandler,
+            ICachedBigbossService cachedBigBossService,
+            IPagedArticlesHandler pagedArticlesHandler,
             ILogger logger)
         {
-            _cachedBigbossService = cachedBigbossService;
-            _articlesHandler = articlesHandler;
+            _cachedBigBossService = cachedBigBossService;
+            _pagedArticlesHandler = pagedArticlesHandler;
             _logger = logger;
 
-            Title = "Home";
+            Title = AppResources.HomePage;
 
-            MenuCommand = new Command<Categories>(async (o) => await ExecuteMenuCommand(o));
-            RefreshArticlesCommand = new Command(async () => await ExecuteRefreshArticlesCommand());
-            ThresholdReachedCommand = new Command(ExecuteThresholdReachedCommand);
-            NavigateToArticleCommand = new Command<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
-            RefreshCommand = new Command(ExecuteRefreshCommand);
+            MenuCommand = new AsyncCommand<Category>((category) => ExecuteMenuCommand(category));
+            ThresholdReachedCommand = new AsyncCommand(ExecuteThresholdReachedCommand);
+            NavigateToArticleCommand = new AsyncCommand<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
+            RefreshCommand = new AsyncCommand(ExecuteRefreshCommand);
         }
 
         public ICommand MenuCommand { get; }
-
-        public ICommand RefreshArticlesCommand { get; }
 
         public ICommand ThresholdReachedCommand { get; }
 
         public ICommand NavigateToArticleCommand { get; }
 
         public ICommand RefreshCommand { get; }
-
-        public string Title
-        {
-            get => _title;
-            set
-            {
-                _title = value;
-                RaisePropertyChanged(() => Title);
-            }
-        }
 
         public bool IsFlyOutOpen
         {
@@ -107,7 +97,7 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        public ObservableCollection<CategoryGrouping<string, Categories>> Categories
+        public ObservableCollection<CategoryGrouping<string, Category>> Categories
         {
             get => _categories;
             set
@@ -142,48 +132,18 @@ namespace TamilSerial.ViewModels
         {
             if (showLoading)
             {
-
                 return DialogService.LoadingAsync(async () =>
                 {
-                    IsBusy = !IsBusy;
-
-                    await LoadHomePage();
+                    await LoadHomePagePrograms();
 
                     _isDummyLoaded = false;
-
-                    IsBusy = !IsBusy;
                 });
             }
-            else
-            {
-                return LoadHomePage();
-            }
+
+            return LoadHomePagePrograms();
         }
-
-        private async Task LoadHomePage()
-        {
-            try
-            {
-                var result = _cachedBigbossService.GetCategories();
-                var articlesResponse = _articlesHandler.LoadArticles(AppConstants.HostUrl);
-
-                await Task.WhenAll(result, articlesResponse);
-
-                Categories = new ObservableCollection<CategoryGrouping<string, Categories>>(result.Result
-                    .GroupBy(categories => categories.CategoryName).Select(grouping =>
-                        new CategoryGrouping<string, Categories>(grouping.Key, grouping)));
-                ProgramInformationList = articlesResponse.Result.ProgramInformations
-                    .Select(ProgramInformationModel.Transform).ToObservableCollection();
-            }
-            catch (System.Exception exception)
-            {
-                _logger.Error(exception, exception.Message);
-                Categories = new ObservableCollection<CategoryGrouping<string, Categories>>();
-                ProgramInformationList = new ObservableCollection<ProgramInformationModel>();
-            }
-        }
-
-        private async Task ExecuteMenuCommand(Categories categoryUrl, bool showLoading = true)
+        
+        private async Task ExecuteMenuCommand(Category categoryUrl, bool showLoading = true)
         {
             IsFlyOutOpen = false;
             _selectedCategory = categoryUrl;
@@ -196,28 +156,7 @@ namespace TamilSerial.ViewModels
             await DialogService.LoadingAsync(async () => { await LoadCategoryPrograms(categoryUrl); });
         }
 
-        private async Task LoadCategoryPrograms(Categories categoryUrl)
-        {
-            try
-            {
-                Title = categoryUrl.Title;
-                var articlesResponse = await _articlesHandler.LoadArticles(categoryUrl.Url).ConfigureAwait(false);
-                ProgramInformationList = articlesResponse.ProgramInformations
-                    .Select(ProgramInformationModel.Transform).ToObservableCollection();
-            }
-            catch (System.Exception exception)
-            {
-                _logger.Error(exception, exception.Message);
-                ProgramInformationList = new ObservableCollection<ProgramInformationModel>();
-            }
-        }
-
-        private async Task ExecuteRefreshArticlesCommand()
-        {
-            await _articlesHandler.ExecuteGetNextPage();
-        }
-
-        private async void ExecuteThresholdReachedCommand()
+        private async Task ExecuteThresholdReachedCommand()
         {
             try
             {
@@ -227,28 +166,7 @@ namespace TamilSerial.ViewModels
                     return;
                 }
 
-                await DialogService.LoadingAsync(async () =>
-                {
-                    if (_articlesHandler.HasNextPage)
-                    {
-                        var result = await _articlesHandler.ExecuteGetNextPage();
-                        if (result.PaginationDetail.Any() || result.ProgramInformations.Any())
-                        {
-                            foreach (var information in result.ProgramInformations)
-                            {
-                                ProgramInformationList.Add(ProgramInformationModel.Transform(information));
-                            }
-                        }
-                        else
-                        {
-                            EndOfItem = true;
-                        }
-                    }
-                    else
-                    {
-                        EndOfItem = true;
-                    }
-                }, "Downloading \n old episodes");
+                await DialogService.LoadingAsync(async () => { await LoadNextPagePrograms(); }, AppResources.DownloadingOldEpisodes);
             }
             catch (System.Exception exception)
             {
@@ -256,22 +174,23 @@ namespace TamilSerial.ViewModels
             }
         }
 
-        private async void ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
+        private async Task ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
         {
             if (string.IsNullOrEmpty(programInformation.Url))
             {
                 await DialogService.ShowAlertAsync(
-                    $"Sorry !! Invalid content information for {programInformation.Title}", "Warning",
-                    "Ok");
+                    string.Format(AppResources.InvalidNavigationUrl, programInformation.Title),
+                    AppResources.Warning,
+                    AppResources.Okay);
             }
 
-            await NavigationService.NavigateAsync("ArticlePage",
-                new NavigationParameters() { { NavigationParameterKeys.ArticleUrl, programInformation } });
+            await NavigationService.NavigateAsync(NavigationKeys.ArticlePage,
+                new NavigationParameters {{NavigationParameterKeys.ArticleUrl, programInformation}});
         }
 
-        private async void ExecuteRefreshCommand()
+        private async Task ExecuteRefreshCommand()
         {
-            await _cachedBigbossService.InvalidateCacheToRefresh();
+            await _cachedBigBossService.InvalidateCacheToRefresh();
             if (_selectedCategory == null)
             {
                 await InitializeData(false);
@@ -282,6 +201,61 @@ namespace TamilSerial.ViewModels
             }
 
             IsRefreshing = false;
+        }
+
+        private async Task LoadHomePagePrograms()
+        {
+            try
+            {
+                var result = _cachedBigBossService.GetCategories();
+                var articlesResponse = _pagedArticlesHandler.LoadArticles(AppConstants.HostUrl);
+
+                await Task.WhenAll(result, articlesResponse);
+
+                Categories = result.Result.GetCategoryGrouping();
+                ProgramInformationList = articlesResponse.Result.ToObservableCollection();
+            }
+            catch (System.Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                Categories = new ObservableCollection<CategoryGrouping<string, Category>>();
+                ProgramInformationList = new ObservableCollection<ProgramInformationModel>();
+            }
+        }
+
+        private async Task LoadCategoryPrograms(Category categoryUrl)
+        {
+            try
+            {
+                Title = categoryUrl.Title;
+                var articlesResponse = await _pagedArticlesHandler.LoadArticles(categoryUrl.Url).ConfigureAwait(false);
+                ProgramInformationList = articlesResponse.ToObservableCollection();
+            }
+            catch (System.Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                ProgramInformationList = new ObservableCollection<ProgramInformationModel>();
+            }
+        }
+
+        private async Task LoadNextPagePrograms()
+        {
+            if (_pagedArticlesHandler.HasNextPage)
+            {
+                var result = await _pagedArticlesHandler.ExecuteGetNextPage();
+                if (result.Any())
+                {
+                    ProgramInformationList.AddBulk(result);
+                }
+                else
+                {
+                    EndOfItem = true;
+                }
+            }
+            else
+            {
+                EndOfItem = true;
+            }
         }
     }
 }

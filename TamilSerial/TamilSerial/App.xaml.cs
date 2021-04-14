@@ -2,11 +2,11 @@
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.ViewModels.Base;
 using TamilSerial.Views;
 using TamilTv.Contracts;
+using TamilTv.Models;
 
 namespace TamilSerial
 {

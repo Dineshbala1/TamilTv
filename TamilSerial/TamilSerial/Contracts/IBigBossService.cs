@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TamilSerial.Models;
+using TamilTv.Models;
 
 namespace TamilSerial.Contracts
 {
     public interface IBigBossService
     {
-        Task<IList<Categories>> GetCategories();
+        Task<IList<Category>> GetCategories();
 
         Task<PagedArticle> GetArticles(string categoryUrl);
 

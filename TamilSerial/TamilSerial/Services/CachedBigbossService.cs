@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MonkeyCache;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
+using TamilTv.Models;
 using Xamarin.Essentials;
 
 namespace TamilSerial.Services
@@ -26,7 +26,7 @@ namespace TamilSerial.Services
             return Task.CompletedTask;
         }
 
-        public async Task<IList<Categories>> GetCategories()
+        public async Task<IList<Category>> GetCategories()
         {
             if (Connectivity.NetworkAccess == NetworkAccess.None)
             {
@@ -35,17 +35,17 @@ namespace TamilSerial.Services
 
             if (!_barrel.IsExpired(AppConstants.CategoryCacheKey))
             {
-                return _barrel.Get<IList<Categories>>(AppConstants.CategoryCacheKey);
+                return _barrel.Get<IList<Category>>(AppConstants.CategoryCacheKey);
             }
 
             var response = await _bigBossService.GetCategories();
             if (response.Any())
             {
                 _barrel.Add(AppConstants.CategoryCacheKey, response, TimeSpan.FromDays(2));
-                return _barrel.Get<IList<Categories>>(AppConstants.CategoryCacheKey);
+                return _barrel.Get<IList<Category>>(AppConstants.CategoryCacheKey);
             }
 
-            return new List<Categories>();
+            return new List<Category>();
         }
 
         public async Task<PagedArticle> GetArticles(string categoryUrl)

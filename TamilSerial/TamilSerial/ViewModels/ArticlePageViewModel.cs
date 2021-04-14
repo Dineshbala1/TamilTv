@@ -3,18 +3,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using TamilSerial.Contracts;
-using TamilSerial.Models;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
 using TamilSerial.ViewModels.Base;
 using TamilTv.Contracts;
+using TamilTv.Extensions;
+using TamilTv.Models;
+using TamilTv.Resources;
+using Xamarin.CommunityToolkit.ObjectModel;
 using Xamarin.Forms;
 
 namespace TamilSerial.ViewModels
 {
     public class ArticlePageViewModel : ViewModelBase
     {
-        private readonly ICachedBigbossService _cachedBigbossService;
+        private readonly ICachedBigbossService _cachedBigBossService;
         private readonly ILogger _logger;
 
         private ArticleModel _article = ArticleModel.Default();
@@ -24,14 +27,14 @@ namespace TamilSerial.ViewModels
         private ObservableCollection<SelectedPlayable> _selectedPlayables = new ObservableCollection<SelectedPlayable>();
 
         public ArticlePageViewModel(
-            ICachedBigbossService cachedBigbossService,
+            ICachedBigbossService cachedBigBossService,
             ILogger logger)
         {
-            _cachedBigbossService = cachedBigbossService;
+            _cachedBigBossService = cachedBigBossService;
             _logger = logger;
 
-            NavigateToArticleCommand = new Command<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
-            UpdatedPlayingVideoUrlCommand = new Command<SelectedPlayable>(ExecuteUpdatedPlayingVideoUrlCommand);
+            NavigateToArticleCommand = new AsyncCommand<ProgramInformationModel>(ExecuteNavigateToArticleCommand);
+            UpdatedPlayingVideoUrlCommand = new AsyncCommand<SelectedPlayable>(ExecuteUpdatedPlayingVideoUrlCommand);
         }
 
         public ICommand NavigateToArticleCommand { get; }
@@ -46,12 +49,6 @@ namespace TamilSerial.ViewModels
                 _article = value;
                 RaisePropertyChanged(() => Article);
             }
-        }
-
-        public string Title
-        {
-            get => _title;
-            set { _title = value; RaisePropertyChanged(() => Title); }
         }
 
         public string Url
@@ -98,86 +95,95 @@ namespace TamilSerial.ViewModels
                 navigationParameters.GetValue<NavigationMode>(NavigationParameterKeys.__NavigationMode) ==
                 NavigationMode.New)
             {
-                await LoadData(navigationParameters);
+                var programInformationModel =
+                    navigationParameters.GetValue<ProgramInformationModel>(NavigationParameterKeys.ArticleUrl);
+                Title = programInformationModel?.Title;
+
+                await LoadData(programInformationModel?.Url);
             }
         }
 
-        private Task LoadData(INavigationParameters navigationParameters)
+        private Task LoadData(string url)
         {
-            return DialogService.LoadingAsync(async () =>
-            {
-                IsBusy = !IsBusy;
-
-                _logger.Information("Loading");
-
-                try
-                {
-                    var articleUrl =
-                        navigationParameters.GetValue<ProgramInformationModel>(NavigationParameterKeys.ArticleUrl);
-                    Title = articleUrl?.Title;
-                    var collection = new ObservableCollection<SelectedPlayable>();
-                    if (!string.IsNullOrEmpty(articleUrl.Url))
-                    {
-                        var article = await _cachedBigbossService.GetArticle(articleUrl.Url);
-                        Article = ArticleModel.Transform(article);
-                        Article.Content = Article.Title;
-
-                        if (Article.VideoUrl.Count <= 1)
-                        {
-                            Url = Article.VideoUrl[0] + "&img" + Article.VideoBanner;
-                        }
-
-                        for (int i = 0; i < Article.VideoUrl.Count - 1; i++)
-                        {
-                            if (i == 0)
-                            {
-                                Url = Article.VideoUrl[i] + "&img" + Article.VideoBanner;
-                            }
-
-                            collection.Add(new SelectedPlayable()
-                            {
-                                Title = $"Part - {i + 1}",
-                                Url = Article.VideoUrl[i] + "&img" + Article.VideoBanner,
-                                IsSelected = i == 0
-                            });
-                        }
-                    }
-
-                    SelectedPlayables = collection;
-                }
-                catch (System.Exception exception)
-                {
-                    _logger.Error(exception, exception.Message);
-                    Article = ArticleModel.Default();
-                }
-
-                IsBusy = !IsBusy;
-            }, "Loading episode");
+            return DialogService.LoadingAsync(async () => { await LoadProgramInformation(url); }, "Loading episode");
         }
 
-        private async void ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
+        private async Task LoadProgramInformation(string url)
+        {
+            IsBusy = !IsBusy;
+            try
+            {
+                if (!string.IsNullOrEmpty(url))
+                {
+                    var article = await _cachedBigBossService.GetArticle(url);
+
+                    var articleModel = article.TransformToArticleModel();
+                    var collection = new ObservableCollection<SelectedPlayable>();
+
+                    articleModel.Content = articleModel.Title;
+                    if (articleModel.VideoUrl.Count <= 1)
+                    {
+                        Url = articleModel.VideoUrl[0] + "&img" + articleModel.VideoBanner;
+                    }
+
+                    CreatePartitionedVideo(articleModel, collection);
+
+                    Article = articleModel;
+                    SelectedPlayables = collection;
+                }
+            }
+            catch (System.Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+                Article = ArticleModel.Default();
+            }
+            finally
+            {
+                IsBusy = !IsBusy;
+            }
+        }
+
+        private async Task ExecuteNavigateToArticleCommand(ProgramInformationModel programInformation)
         {
             if (string.IsNullOrEmpty(programInformation.Url))
             {
                 await DialogService.ShowAlertAsync(
-                    $"Sorry !! Invalid content information for {programInformation.Title}", "Warning",
-                    "Ok");
+                    string.Format(AppResources.InvalidNavigationUrl, programInformation.Title),
+                    AppResources.Warning,
+                    AppResources.Okay);
+                return;
             }
 
-            await NavigationService.NavigateAsync("ArticlePage",
-                new NavigationParameters() { { NavigationParameterKeys.ArticleUrl, programInformation } });
+            await NavigationService.NavigateAsync(NavigationKeys.ArticlePage,
+                new NavigationParameters {{NavigationParameterKeys.ArticleUrl, programInformation}});
         }
 
-        private void ExecuteUpdatedPlayingVideoUrlCommand(SelectedPlayable playable)
+        private Task ExecuteUpdatedPlayingVideoUrlCommand(SelectedPlayable playable)
         {
-            SelectedPlayables.All(x =>
-            {
-                x.IsSelected = false;
-                return true;
-            });
+            SelectedPlayables.ResetAll(x => x.IsSelected = false);
 
             playable.IsSelected = true;
             Url = playable.Url;
+
+            return Task.CompletedTask;
+        }
+
+        private void CreatePartitionedVideo(ArticleModel articleModel, ObservableCollection<SelectedPlayable> collection)
+        {
+            for (int i = 0; i < articleModel.VideoUrl.Count - 1; i++)
+            {
+                if (i == 0)
+                {
+                    Url = articleModel.VideoUrl[i] + "&img" + articleModel.VideoBanner;
+                }
+
+                collection.Add(new SelectedPlayable
+                {
+                    Title = $"Part - {i + 1}",
+                    Url = articleModel.VideoUrl[i] + "&img" + articleModel.VideoBanner,
+                    IsSelected = i == 0
+                });
+            }
         }
     }
 }
