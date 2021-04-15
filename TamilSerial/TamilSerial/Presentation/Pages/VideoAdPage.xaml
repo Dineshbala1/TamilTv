@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="TamilTv.Presentation.Pages.VideoAdPage"
+             xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:plugin="clr-namespace:ProgressRingControl.Forms.Plugin;assembly=ProgressRing.Forms.Plugin">
+    <Grid>
+        <ContentView x:Name="ContentView"
+                     HorizontalOptions="FillAndExpand"
+                     VerticalOptions="FillAndExpand" />
+        <Grid Margin="25"
+              HorizontalOptions="EndAndExpand"
+              InputTransparent="True"
+              VerticalOptions="StartAndExpand">
+            <plugin:ProgressRing x:Name="ProgressRing"
+                                 HeightRequest="75"
+                                 IsVisible="False"
+                                 Progress="1"
+                                 RingProgressColor="{StaticResource YellowColor}"
+                                 RingThickness="4"
+                                 WidthRequest="75" />
+            <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+                <Label x:Name="Label"
+                       IsVisible="False"
+                       Text="Ad"
+                       TextColor="{StaticResource YellowColor}" />
+            </StackLayout>
+        </Grid>
+    </Grid>
+</ContentPage>

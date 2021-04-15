@@ -6,7 +6,7 @@ using TamilTv.Contracts;
 using TamilTv.Extensions;
 using TamilTv.Models;
 
-namespace TamilSerial.Services
+namespace TamilTv.Services
 {
     public class PagedArticlesHandler : IPagedArticlesHandler
     {

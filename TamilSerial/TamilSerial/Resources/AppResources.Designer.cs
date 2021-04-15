@@ -61,11 +61,56 @@ namespace TamilTv.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/1902799875.
+        /// </summary>
+        internal static string ArticleFooterAd {
+            get {
+                return ResourceManager.GetString("ArticleFooterAd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/2914954052.
+        /// </summary>
+        internal static string ArticleHeaderAd {
+            get {
+                return ResourceManager.GetString("ArticleHeaderAd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/2140928439.
+        /// </summary>
+        internal static string CategoryFooterAd {
+            get {
+                return ResourceManager.GetString("CategoryFooterAd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloading \n old episodes.
         /// </summary>
         internal static string DownloadingOldEpisodes {
             get {
                 return ResourceManager.GetString("DownloadingOldEpisodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/6633857156.
+        /// </summary>
+        internal static string HomeFooterAd {
+            get {
+                return ResourceManager.GetString("HomeFooterAd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/1535204028.
+        /// </summary>
+        internal static string HomeHeaderAd {
+            get {
+                return ResourceManager.GetString("HomeHeaderAd", resourceCulture);
             }
         }
         
@@ -112,6 +157,24 @@ namespace TamilTv.Resources {
         internal static string Okay {
             get {
                 return ResourceManager.GetString("Okay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/1563124184.
+        /// </summary>
+        internal static string ProgramItemAd {
+            get {
+                return ResourceManager.GetString("ProgramItemAd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ca-app-pub-5213150499806218/3809233328.
+        /// </summary>
+        internal static string VideoInterimAd {
+            get {
+                return ResourceManager.GetString("VideoInterimAd", resourceCulture);
             }
         }
         

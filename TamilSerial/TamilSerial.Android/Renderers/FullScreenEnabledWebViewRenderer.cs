@@ -1,9 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Timers;
 using Android.Content;
+using Android.Gms.Ads;
+using Android.Media;
+using Android.OS;
+using MarcTron.Plugin;
+using MarcTron.Plugin.Listeners;
 using TamilSerial.Droid.Renderers;
 using TamilSerial.Presentation.Controls;
 using Xamarin.Essentials;
+using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 using XFAndroidFullScreen.Droid.Renderers;
 using WebView = Xamarin.Forms.WebView;
@@ -16,7 +24,7 @@ namespace TamilSerial.Droid.Renderers
     /// <summary>
     /// An Android renderer for <see cref="FullScreenEnabledWebView"/>.
     /// </summary>
-    public class FullScreenEnabledWebViewRenderer : WebViewRenderer
+    public class FullScreenEnabledWebViewRenderer : WebViewRenderer, AudioManager.IOnAudioFocusChangeListener
     {
         private FullScreenEnabledWebView _webView;
 
@@ -33,14 +41,26 @@ namespace TamilSerial.Droid.Renderers
         {
             base.OnElementChanged(e);
 
-            _webView = (FullScreenEnabledWebView) e.NewElement;
+            _webView = (FullScreenEnabledWebView)e.NewElement;
             if (Control != null)
             {
                 Control.Settings.JavaScriptEnabled = true;
                 Control.Settings.JavaScriptCanOpenWindowsAutomatically = true;
                 Control.Settings.BuiltInZoomControls = false;
-                Control.SetWebViewClient(new PlayerClient(this));
                 Xamarin.Essentials.Platform.ActivityStateChanged += Platform_ActivityStateChanged;
+                //if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                //{
+                //    (Xamarin.Essentials.Platform.AppContext.GetSystemService(Context.AudioService) as AudioManager)
+                //        .RequestAudioFocus(new AudioFocusRequestClass.Builder(AudioFocus.Gain).SetAudioAttributes(
+                //                new AudioAttributes.Builder().SetUsage(AudioUsageKind.Media)
+                //                    .SetContentType(AudioContentType.Movie).Build()).SetOnAudioFocusChangeListener(this)
+                //            .Build());
+                //}
+                //else
+                //{
+                //    (Xamarin.Essentials.Platform.AppContext.GetSystemService(Context.AudioService) as AudioManager)
+                //        .RequestAudioFocus(this, Stream.Music, AudioFocus.Gain);
+                //}
             }
         }
 
@@ -77,11 +97,20 @@ namespace TamilSerial.Droid.Renderers
 
         protected override void Dispose(bool disposing)
         {
-            base.Dispose(disposing);
             if (disposing)
             {
+                if (Control != null)
+                {
+                    Control.ClearCache(true);
+                    Control.ClearHistory();
+                    Control.ClearFormData();
+                    Control.ClearSslPreferences();
+                }
+
                 Xamarin.Essentials.Platform.ActivityStateChanged -= Platform_ActivityStateChanged;
             }
+
+            base.Dispose(disposing);
         }
 
         /// <summary>
@@ -124,12 +153,22 @@ namespace TamilSerial.Droid.Renderers
             {
                 case ActivityState.Resumed:
                     Control.OnResume();
+                    // _adTimer.StartTimer();
                     break;
                 case ActivityState.Paused:
                     Control.OnPause();
+                   // _adTimer.StopTimer();
                     break;
                 default:
                     break;
+            }
+        }
+
+        public void OnAudioFocusChange(AudioFocus focusChange)
+        {
+            if (focusChange == AudioFocus.Loss || focusChange == AudioFocus.Gain)
+            {
+              //  _adTimer.StartTimer();
             }
         }
     }

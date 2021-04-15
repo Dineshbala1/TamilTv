@@ -7,7 +7,7 @@ using TamilSerial.Contracts;
 using TamilTv.Models;
 using Xamarin.Essentials;
 
-namespace TamilSerial.Services
+namespace TamilTv.Services
 {
     public class CachedBigbossService : ICachedBigbossService
     {

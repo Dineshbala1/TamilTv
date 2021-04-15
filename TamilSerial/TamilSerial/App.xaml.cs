@@ -12,6 +12,7 @@ namespace TamilSerial
 {
     public partial class App
     {
+        public static bool InForeground;
         private readonly INavigationService _navigationService;
         private readonly IResumableService _resumableService;
 
@@ -32,16 +33,19 @@ namespace TamilSerial
         {
             _resumableService.OnStart();
             await InitApp();
+            InForeground = true;
         }
 
         protected override void OnSleep()
         {
             _resumableService.OnSleep();
+            InForeground = false;
         }
 
         protected override void OnResume()
         {
             _resumableService.OnResume();
+            InForeground = true;
         }
 
         private async Task InitApp()

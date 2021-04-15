@@ -40,11 +40,10 @@
                             Style="{StaticResource CollectionViewArticleListStyle}" />
         </RefreshView>
 
-        <controls:MTAdView x:Name="AdView"
-                           Grid.Row="1"
+        <controls:MTAdView Grid.Row="1"
                            AdsId="ca-app-pub-5213150499806218/6633857156"
-                           HeightRequest="{OnIdiom Phone=50,
-                                                   Tablet=90}"
+                           HeightRequest="{x:OnIdiom Phone=70,
+                                                     Tablet=90}"
                            IsVisible="True"
                            PersonalizedAds="False"
                            VerticalOptions="End" />

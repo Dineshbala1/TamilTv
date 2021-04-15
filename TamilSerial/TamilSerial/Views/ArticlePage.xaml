@@ -2,19 +2,24 @@
 <presentation1:SearchableContentPage x:Class="TamilSerial.Views.ArticlePage"
                                      xmlns="http://xamarin.com/schemas/2014/forms"
                                      xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                                     xmlns:behaviors="clr-namespace:TamilTv.Presentation.Behaviors;assembly=TamilTv"
                                      xmlns:controls="clr-namespace:MarcTron.Plugin.Controls;assembly=Plugin.MtAdmob"
                                      xmlns:controls1="clr-namespace:TamilSerial.Presentation.Controls;assembly=TamilTv"
                                      xmlns:converters="http://xamarin.com/schemas/2020/toolkit"
                                      xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
                                      xmlns:materialFrame="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
                                      xmlns:presentation1="clr-namespace:TamilSerial.Presentation;assembly=TamilTv"
+                                     xmlns:resources="clr-namespace:TamilTv.Resources;assembly=TamilTv"
                                      xmlns:skeleton="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
                                      xmlns:xe="clr-namespace:XamEffects;assembly=XamEffects"
                                      Title="{Binding Title}"
                                      converters:SafeAreaEffect.SafeArea="true">
 
+    <presentation1:SearchableContentPage.Behaviors>
+        <behaviors:PageBehavior FullScreenWebView="{x:Reference FullScreenEnabledWebView}" />
+    </presentation1:SearchableContentPage.Behaviors>
+
     <presentation1:SearchableContentPage.Resources>
-        <converters:ListIsNotNullOrEmptyConverter x:Key="IsNotNullOrEmptyConverter" />
         <converters:InvertedBoolConverter x:Key="InvertedBoolConverter" />
     </presentation1:SearchableContentPage.Resources>
 
@@ -28,62 +33,83 @@
         </Grid.RowDefinitions>
 
         <controls:MTAdView Grid.Row="0"
-                           AdsId="ca-app-pub-5213150499806218/2914954052"
-                           HeightRequest="{OnIdiom Phone=50,
-                                                   Tablet=90}"
+                           AdsId="{x:Static resources:AppResources.ArticleHeaderAd}"
+                           HeightRequest="{x:OnIdiom Phone=50,
+                                                     Tablet=90}"
                            IsVisible="True"
                            PersonalizedAds="False"
                            VerticalOptions="End" />
 
-        <controls1:FullScreenEnabledWebView Grid.Row="1"
-                                            skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
-                                            skeleton:Skeleton.BackgroundColor="#c6c6c5"
-                                            skeleton:Skeleton.IsBusy="{Binding IsBusy, Mode=TwoWay}"
-                                            BackgroundColor="Black"
-                                            HorizontalOptions="FillAndExpand"
-                                            Pause="{Binding Pause}"
-                                            Source="{Binding Url}"
-                                            VerticalOptions="FillAndExpand" />
-        <StackLayout Grid.Row="2"
-                     BindableLayout.ItemsSource="{Binding SelectedPlayables}"
-                     HorizontalOptions="Start"
-                     Spacing="2">
-            <BindableLayout.ItemTemplate>
-                <DataTemplate>
-                    <Button Margin="10,0"
-                            Command="{Binding BindingContext.UpdatedPlayingVideoUrlCommand, Source={x:Reference Grid}}"
-                            CommandParameter="{Binding .}"
-                            FontSize="Default"
-                            HorizontalOptions="Start"
-                            Text="{Binding Title}">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState Name="Normal">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsSelected, Converter={StaticResource InvertedBoolConverter}}" />
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="{StaticResource YellowColor}" />
-                                        <Setter Property="Scale" Value="1" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState Name="Pressed">
-                                    <VisualState.StateTriggers>
-                                        <StateTrigger IsActive="{Binding IsSelected}" />
-                                    </VisualState.StateTriggers>
-                                    <VisualState.Setters>
-                                        <Setter Property="BackgroundColor" Value="{StaticResource TealColor}" />
-                                        <Setter Property="Scale" Value="0.8" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                                <VisualState Name="Focused" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                    </Button>
+        <Grid Grid.Row="1">
+            <controls1:FullScreenEnabledWebView x:Name="FullScreenEnabledWebView"
+                                                skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
+                                                skeleton:Skeleton.BackgroundColor="#c6c6c5"
+                                                skeleton:Skeleton.IsBusy="{Binding IsBusy, Mode=TwoWay}"
+                                                BackgroundColor="Black"
+                                                HorizontalOptions="FillAndExpand"
+                                                Pause="{Binding Pause}"
+                                                ShowAd="{Binding Pause}"
+                                                Source="{Binding Url}"
+                                                VerticalOptions="FillAndExpand" />
+            <BoxView HorizontalOptions="FillAndExpand"
+                     InputTransparent="False"
+                     VerticalOptions="FillAndExpand"
+                     Color="Transparent">
+                <BoxView.Behaviors>
+                    <behaviors:BoxBehavior />
+                </BoxView.Behaviors>
+            </BoxView>
 
-                </DataTemplate>
-            </BindableLayout.ItemTemplate>
-        </StackLayout>
+        </Grid>
+
+        <ScrollView Grid.Row="2"
+                    HorizontalOptions="FillAndExpand"
+                    HorizontalScrollBarVisibility="Never"
+                    Orientation="Horizontal"
+                    VerticalOptions="Start"
+                    VerticalScrollBarVisibility="Never">
+            <StackLayout BindableLayout.ItemsSource="{Binding SelectedPlayables}"
+                         HorizontalOptions="Start"
+                         Orientation="Horizontal"
+                         Spacing="2">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Button Margin="10,0"
+                                Command="{Binding BindingContext.UpdatedPlayingVideoUrlCommand, Source={x:Reference Grid}}"
+                                CommandParameter="{Binding .}"
+                                FontSize="Default"
+                                HorizontalOptions="Start"
+                                Text="{Binding Title}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState Name="Normal">
+                                        <VisualState.StateTriggers>
+                                            <StateTrigger IsActive="{Binding IsSelected, Converter={StaticResource InvertedBoolConverter}}" />
+                                        </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="{StaticResource YellowColor}" />
+                                            <Setter Property="Scale" Value="1" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Pressed">
+                                        <VisualState.StateTriggers>
+                                            <StateTrigger IsActive="{Binding IsSelected}" />
+                                        </VisualState.StateTriggers>
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="{StaticResource TealColor}" />
+                                            <Setter Property="Scale" Value="0.95" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Focused" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Button>
+
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+
+            </StackLayout>
+        </ScrollView>
 
         <ScrollView Grid.Row="3" Margin="10,0,10,10">
             <Grid>
@@ -141,23 +167,30 @@
                                           BackgroundColor="Transparent"
                                           IsClippedToBounds="True">
 
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="3.5*" />
                                             <ColumnDefinition Width="6.5*" />
                                         </Grid.ColumnDefinitions>
 
-                                        <forms:CachedImage Grid.Column="0"
+                                        <forms:CachedImage Grid.Row="0"
+                                                           Grid.Column="0"
                                                            skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
                                                            skeleton:Skeleton.BackgroundColor="#c6c6c5"
                                                            skeleton:Skeleton.IsBusy="{Binding Path=BindingContext.IsBusy, Source={x:Reference Grid}}"
                                                            Aspect="Fill"
-                                                           HeightRequest="{OnIdiom Phone=110,
+                                                           HeightRequest="{OnIdiom Phone=100,
                                                                                    Tablet=130}"
                                                            InputTransparent="True"
                                                            Source="{Binding Image}"
                                                            Visual="Default" />
 
-                                        <StackLayout Grid.Column="1"
+                                        <StackLayout Grid.Row="0"
+                                                     Grid.Column="1"
                                                      Padding="2.5,0"
                                                      skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Fade}"
                                                      skeleton:Skeleton.IsParent="True"
@@ -188,6 +221,17 @@
                                                    VerticalOptions="CenterAndExpand" />
 
                                         </StackLayout>
+
+                                        <controls:MTAdView Grid.Row="1"
+                                                           Grid.Column="0"
+                                                           Grid.ColumnSpan="2"
+                                                           AdsId="{x:Static resources:AppResources.ProgramItemAd}"
+                                                           HeightRequest="{x:OnIdiom Phone=45,
+                                                                                     Tablet=90}"
+                                                           IsVisible="True"
+                                                           PersonalizedAds="False"
+                                                           VerticalOptions="End" />
+
                                     </Grid>
                                 </materialFrame:MaterialFrame>
                             </DataTemplate>
@@ -199,9 +243,9 @@
         </ScrollView>
 
         <controls:MTAdView Grid.Row="4"
-                           AdsId="ca-app-pub-5213150499806218/1902799875"
-                           HeightRequest="{OnIdiom Phone=50,
-                                                   Tablet=90}"
+                           AdsId="{x:Static resources:AppResources.ArticleFooterAd}"
+                           HeightRequest="{x:OnIdiom Phone=50,
+                                                     Tablet=90}"
                            IsVisible="True"
                            PersonalizedAds="False"
                            VerticalOptions="End" />

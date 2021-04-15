@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Refit;
 using TamilTv.Models;
 
-namespace TamilSerial.Contracts
+namespace TamilTv.Contracts
 {
     public interface IApiService
     {

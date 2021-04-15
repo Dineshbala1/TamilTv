@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArticleFooterAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/1902799875</value>
+  </data>
+  <data name="ArticleHeaderAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/2914954052</value>
+  </data>
+  <data name="CategoryFooterAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/2140928439</value>
+  </data>
   <data name="DownloadingOldEpisodes" xml:space="preserve">
     <value>Downloading \n old episodes</value>
+  </data>
+  <data name="HomeFooterAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/6633857156</value>
+  </data>
+  <data name="HomeHeaderAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/1535204028</value>
   </data>
   <data name="HomePage" xml:space="preserve">
     <value>Home</value>
@@ -135,6 +150,12 @@
   </data>
   <data name="Okay" xml:space="preserve">
     <value>OK</value>
+  </data>
+  <data name="ProgramItemAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/1563124184</value>
+  </data>
+  <data name="VideoInterimAd" xml:space="preserve">
+    <value>ca-app-pub-5213150499806218/3809233328</value>
   </data>
   <data name="Warning" xml:space="preserve">
     <value>Warning</value>

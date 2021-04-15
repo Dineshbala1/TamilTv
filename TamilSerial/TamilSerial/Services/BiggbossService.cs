@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using Polly;
 using Serilog;
 using TamilSerial.Contracts;
+using TamilTv.Contracts;
 using TamilTv.Models;
 
-namespace TamilSerial.Services
+namespace TamilTv.Services
 {
     public class BigBossService : IBigBossService
     {

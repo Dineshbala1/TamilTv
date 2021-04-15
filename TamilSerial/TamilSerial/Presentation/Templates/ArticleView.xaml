@@ -2,10 +2,12 @@
 <Grid x:Class="TamilTv.Presentation.Templates.ArticleView"
       xmlns="http://xamarin.com/schemas/2014/forms"
       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+      xmlns:controls="clr-namespace:MarcTron.Plugin.Controls;assembly=Plugin.MtAdmob"
       xmlns:converters="http://xamarin.com/schemas/2020/toolkit"
       xmlns:forms="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
       xmlns:materialFrame="clr-namespace:Sharpnado.MaterialFrame;assembly=Sharpnado.MaterialFrame"
       xmlns:pancakeView="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+      xmlns:resources="clr-namespace:TamilTv.Resources;assembly=TamilTv"
       xmlns:skeleton="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
       xmlns:xamEffects="clr-namespace:XamEffects;assembly=XamEffects">
 
@@ -27,6 +29,11 @@
               xamEffects:Commands.TapParameter="{Binding .}"
               xamEffects:TouchEffect.Color="LightGray">
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
             <forms:CachedImage Grid.Row="0"
                                skeleton:Skeleton.Animation="{skeleton:DefaultAnimation Beat}"
                                skeleton:Skeleton.BackgroundColor="#c6c6c5"
@@ -39,7 +46,8 @@
                                LoadingPriority="Highest"
                                Source="{Binding Image}" />
 
-            <Grid skeleton:Skeleton.IsParent="True"
+            <Grid Grid.Row="0"
+                  skeleton:Skeleton.IsParent="True"
                   RowSpacing="2"
                   VerticalOptions="FillAndExpand">
 
@@ -82,6 +90,14 @@
                 <Label Style="{StaticResource ArticleCardDateLabelStyle}" Text="{Binding Date}" />
 
             </pancakeView:PancakeView>
+
+            <controls:MTAdView Grid.Row="1"
+                               AdsId="{x:Static resources:AppResources.ProgramItemAd}"
+                               HeightRequest="{x:OnIdiom Phone=70,
+                                                         Tablet=90}"
+                               IsVisible="True"
+                               PersonalizedAds="False"
+                               VerticalOptions="End" />
 
         </Grid>
     </materialFrame:MaterialFrame>

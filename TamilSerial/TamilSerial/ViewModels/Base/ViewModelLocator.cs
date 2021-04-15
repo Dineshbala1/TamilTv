@@ -8,7 +8,6 @@ using TamilSerial.Contracts;
 using TamilSerial.Presentation.Dialog;
 using TamilSerial.Presentation.Navigation;
 using TamilSerial.Presentation.Navigation.Base;
-using TamilSerial.Services;
 using TamilSerial.Views;
 using TamilTv.Contracts;
 using TamilTv.Models;

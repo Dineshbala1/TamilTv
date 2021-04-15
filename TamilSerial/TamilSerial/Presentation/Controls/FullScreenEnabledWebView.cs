@@ -1,11 +1,18 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
+using MarcTron.Plugin;
+using TamilTv.Presentation.Pages;
+using TamilTv.Resources;
 using Xamarin.Forms;
 
 namespace TamilSerial.Presentation.Controls
 {
     public class FullScreenEnabledWebView : WebView
     {
+        private static VideoAdPage _timerPage;
+
+        private bool _firstTouch;
+
         /// <summary>
         /// Bindable property for <see cref="EnterFullScreenCommand"/>.
         /// </summary>
@@ -33,6 +40,15 @@ namespace TamilSerial.Presentation.Controls
                 typeof(FullScreenEnabledWebView),
                 defaultValue: false);
 
+        public static readonly BindableProperty ShowAdProperty =
+            BindableProperty.Create(
+                nameof(ShowAd),
+                typeof(bool),
+                typeof(FullScreenEnabledWebView),
+                defaultValue: false,
+                BindingMode.TwoWay,
+                propertyChanged: PropertyChanged);
+
         /// <summary>
         /// Gets or sets the command executed when the web view content requests entering full-screen.
         /// The command is passed a <see cref="View"/> containing the content to display.
@@ -57,18 +73,67 @@ namespace TamilSerial.Presentation.Controls
 
         public bool Pause
         {
-            get => (bool) GetValue(PauseProperty);
+            get => (bool)GetValue(PauseProperty);
             set => SetValue(PauseProperty, value);
+        }
+
+        public bool ShowAd
+        {
+            get => (bool)GetValue(ShowAdProperty);
+            set => SetValue(ShowAdProperty, value);
+        }
+
+        public ICommand StartAdNoticeCommand { get; }
+
+        public FullScreenEnabledWebView()
+        {
+            StartAdNoticeCommand = new Command(Execute);
+        }
+
+        private void Execute(object obj)
+        {
+            if (_timerPage == null)
+            {
+                ShowAd = true;
+                return;
+            }
+
+            _timerPage.ShowTimerAdBeginningInSeconds(10);
         }
 
         private static async Task DefaultEnterAsync(View view)
         {
-            var page = new ContentPage
+            if (_timerPage != null)
             {
-                Content = view
-            };
+                _timerPage = null;
+            }
 
-            await Application.Current.MainPage.Navigation.PushModalAsync(page);
+            _timerPage = new VideoAdPage(view,
+                () =>
+                {
+                    if (App.InForeground)
+                    {
+                        CrossMTAdmob.Current.LoadInterstitial(AppResources.VideoInterimAd);
+                    }
+                });
+
+            await Application.Current.MainPage.Navigation.PushModalAsync(_timerPage);
+        }
+
+        private static void PropertyChanged(BindableObject bindable, object oldvalue, object newvalue)
+        {
+            if (newvalue is bool result && result)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (App.InForeground)
+                    {
+                        CrossMTAdmob.Current.LoadInterstitial(AppResources.VideoInterimAd);
+                    }
+                });
+
+                ((FullScreenEnabledWebView)bindable).ShowAd = false;
+            }
         }
 
         private static async Task DefaultExitAsync()

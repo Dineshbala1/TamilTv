@@ -73,23 +73,4 @@ namespace XFAndroidFullScreen.Droid.Renderers
             EnterFullscreenRequested?.Invoke(this, new EnterFullScreenRequestedEventArgs(view));
         }
     }
-
-    public class PlayerClient : FormsWebViewClient
-    {
-        public PlayerClient(WebViewRenderer renderer) : base(renderer)
-        {
-        }
-
-        protected PlayerClient(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
-        {
-        }
-
-        public override void OnPageFinished(WebView view, string url)
-        {
-            base.OnPageFinished(view, url);
-
-            var javascript = "javascript:jwplayer().getDuration()";
-            view.LoadUrl(javascript);
-        }
-    }
 }
