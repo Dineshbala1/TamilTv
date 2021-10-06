@@ -3,7 +3,15 @@
 	xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"
 	xmlns:dc="http://purl.org/dc/elements/1.1/" version="2.0">
 	<channel>
+		<title>Sparkle Test App Changelog</title>
+		<link>http://sparkle-project.org/files/sparkletestcast.xml</link>
+		<description>Most recent changes with links to updates.</description>
+		<language>en</language>
 		<item>
+			<title>Version 2.0</title>
+			<link>https://sparkle-project.org</link>
+			<sparkle:version>2.0</sparkle:version>
+			<pubDate>Sat, 26 Jul 2014 15:20:11 +0000</pubDate>
 			<enclosure url="https://cloud.synchronoss.com/snc-repo/static/Installers/macOS/PersonalCloud-Production-21.6.2.dmg" type="application/octet-stream" />
 		</item>
 	</channel>
