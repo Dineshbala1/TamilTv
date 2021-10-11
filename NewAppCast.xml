@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+	<channel>
+		<item>
+			<title>Personal Cloud 21.5.9</title>
+			<sparkle:version>21.5.9</sparkle:version>
+			<enclosure url="https://cloud.synchronoss.com/snc-repo/static/Installers/macOS/PersonalCloud-Production-21.6.2.dmg" />
+		</item>
+	</channel>
+</rss>
