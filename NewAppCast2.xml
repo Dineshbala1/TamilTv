@@ -2,7 +2,7 @@
 <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
 	<channel>
 		<item>
-			<title>Personal Cloud 22.2.2</title>
+			<title>Capsyl 22.2.2</title>
 			<sparkle:version>22.2.2</sparkle:version>
 			<enclosure url="https://cloud.synchronoss.com/snc-repo/static/Installers/macOS/Capsyl-Production-22.2.2.dmg" />
 		</item>
