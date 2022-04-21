@@ -3,8 +3,7 @@
 	<channel>
 		<item>
 			<title>Capsyl 22.2.2</title>
-			<sparkle:version>22.2.2</sparkle:version>
-			<enclosure url="https://cloud.synchronoss.com/snc-repo/static/Installers/macOS/Capsyl-Production-22.2.2.dmg" />
+			<enclosure url="https://cloud.synchronoss.com/snc-repo/static/Installers/macOS/Capsyl-Production-22.2.2.dmg" sparkle:version="2" sparkle:shortVersionString="22.2.2" length="15688487" type="application/octet-stream"/>
 		</item>
 	</channel>
 </rss>
